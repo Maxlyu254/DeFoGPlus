@@ -1,0 +1,40 @@
+defaults:
+  - config
+  - experiment: qm9_no_h
+  - augmentation: B0
+  - _self_
+
+general:
+  name: batch1
+  wandb: disabled  # the experiment callback owns explicitly allowlisted logging
+  gpus: 1
+train:
+  n_epochs: 1000
+  batch_size: 1024
+  num_workers: 4
+sample:
+  sample_steps: 500
+  time_distortion: polydec
+  eta: 0
+  omega: 0
+  search: false
+batch1:
+  evaluation_epochs: [0, 1, 5, 10, 20, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+  curve_samples: 2000
+  final_samples: 10000
+  final_repeats: 3
+  inference_batch_size: 2048
+  recovery_every: 25
+  validation_samples: 128
+  validation_batch_size: 32
+  validation_times: [0.1, 0.5, 0.9]
+  degree_pseudoatoms: 100
+  density_pseudographs: 20
+  diagnostic_samples: 64
+  trajectory_times: [0.0, 0.25, 0.5, 0.75, 1.0]
+  wandb_mode: offline
+  wandb_entity: maxlyu254-university-of-illinois-urbana-champaign
+  wandb_project: defog-qm9-batch1
+  curve_seed: 11000
+  validation_seed: 12000
+  final_seed: 21000

@@ -157,3 +157,15 @@ src/analysis/orca/tmp*
 src/timer.dat
 checkpoints
 wandb/
+
+# Experiment artifacts (source, curated reports and run indexes remain versioned)
+.vscode/
+.pixi/
+runs/
+artifacts/
+*.ckpt
+benchmarks/results/**/raw/
+benchmarks/results/**/setup/
+**/wandb-env.sh
+*.swp
+*.swo

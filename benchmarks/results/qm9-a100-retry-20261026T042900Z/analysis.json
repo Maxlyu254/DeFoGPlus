@@ -1,0 +1,278 @@
+{
+  "setup_job": {
+    "id": 11822422,
+    "state": "COMPLETED",
+    "elapsed_seconds": 349,
+    "exit_code": "0:0"
+  },
+  "a100_job": {
+    "id": 11822489,
+    "state": "COMPLETED",
+    "elapsed_seconds": 1859,
+    "exit_code": "0:0",
+    "gpu_hours": 0.5163888888888889,
+    "host_step_maxrss_gib": 4.4169464111328125,
+    "queue_including_dependency_seconds": 1489,
+    "queue_after_preparation_seconds": 1177
+  },
+  "hardware": {
+    "event": "environment",
+    "unix_time": 1792990575.7149608,
+    "gpu": "NVIDIA A100-SXM4-80GB",
+    "gpu_bytes": 85093777408,
+    "import_seconds": 20.335368569998536,
+    "torch": "2.4.0.post301",
+    "cuda": "11.8",
+    "packages": {
+      "numpy": "2.3.1",
+      "rdkit": "2025.3.4",
+      "pytorch-lightning": "2.5.2",
+      "torch-geometric": "2.3.1",
+      "torchmetrics": "0.11.4"
+    },
+    "notes": [
+      "model/prior unchanged",
+      "unused full-dataset reference metrics omitted",
+      "strict connected metrics added; legacy metrics separately labeled",
+      "epoch timer ends before module epoch-end logging"
+    ]
+  },
+  "training": [
+    {
+      "workers": 0,
+      "epochs": 20,
+      "graphs_per_epoch": 97734,
+      "batches_per_epoch": 96,
+      "fit_seconds": 457.7686998489953,
+      "steady_epoch_median_seconds": 22.494044957507867,
+      "steady_epoch_p90_seconds": 22.53161758391361,
+      "steady_graphs_per_second": 4344.883387368493,
+      "peak_allocated_gib": 6.973198413848877,
+      "peak_reserved_gib": 7.36328125
+    },
+    {
+      "workers": 4,
+      "epochs": 20,
+      "graphs_per_epoch": 97734,
+      "batches_per_epoch": 96,
+      "fit_seconds": 378.3315388239862,
+      "steady_epoch_median_seconds": 18.690476759016747,
+      "steady_epoch_p90_seconds": 19.478028568587614,
+      "steady_graphs_per_second": 5229.120390894345,
+      "peak_allocated_gib": 6.980379104614258,
+      "peak_reserved_gib": 7.369140625
+    }
+  ],
+  "sampling": [
+    {
+      "event": "generation",
+      "unix_time": 1792991430.9944386,
+      "tag": "warmup128",
+      "attempts": 128,
+      "batch_size": 128,
+      "seed": 100,
+      "steps": 500,
+      "seconds": 12.644400296005188,
+      "molecules_per_second": 10.123058192047251,
+      "peak_gpu_allocated_bytes": 122268160,
+      "checkpoint_age": 0
+    },
+    {
+      "event": "generation",
+      "unix_time": 1792991492.6445272,
+      "tag": "eval2000_rep0",
+      "attempts": 2000,
+      "batch_size": 2048,
+      "seed": 101,
+      "steps": 500,
+      "seconds": 61.43819180098944,
+      "molecules_per_second": 32.55304137983746,
+      "peak_gpu_allocated_bytes": 1200130560,
+      "checkpoint_age": 0
+    },
+    {
+      "event": "generation",
+      "unix_time": 1792991804.0280504,
+      "tag": "eval10000",
+      "attempts": 10000,
+      "batch_size": 2048,
+      "seed": 102,
+      "steps": 500,
+      "seconds": 307.779463474988,
+      "molecules_per_second": 32.49079677732514,
+      "peak_gpu_allocated_bytes": 1224376832,
+      "checkpoint_age": 0
+    },
+    {
+      "event": "generation",
+      "unix_time": 1792991883.4114575,
+      "tag": "eval2000_rep1",
+      "attempts": 2000,
+      "batch_size": 2048,
+      "seed": 102,
+      "steps": 500,
+      "seconds": 61.41231192299165,
+      "molecules_per_second": 32.566759618297915,
+      "peak_gpu_allocated_bytes": 1194716672,
+      "checkpoint_age": 0
+    },
+    {
+      "event": "generation",
+      "unix_time": 1792991945.5065355,
+      "tag": "eval2000_rep2",
+      "attempts": 2000,
+      "batch_size": 2048,
+      "seed": 103,
+      "steps": 500,
+      "seconds": 61.40008951499476,
+      "molecules_per_second": 32.57324241378463,
+      "peak_gpu_allocated_bytes": 1194716672,
+      "checkpoint_age": 0
+    },
+    {
+      "event": "generation",
+      "unix_time": 1792992066.1502137,
+      "tag": "batch256",
+      "attempts": 2000,
+      "batch_size": 256,
+      "seed": 101,
+      "steps": 500,
+      "seconds": 119.94744021599763,
+      "molecules_per_second": 16.673969835441774,
+      "peak_gpu_allocated_bytes": 189573632,
+      "checkpoint_age": 0
+    },
+    {
+      "event": "generation",
+      "unix_time": 1792992153.4034927,
+      "tag": "batch512",
+      "attempts": 2000,
+      "batch_size": 512,
+      "seed": 101,
+      "steps": 500,
+      "seconds": 86.5422711809806,
+      "molecules_per_second": 23.110093746182386,
+      "peak_gpu_allocated_bytes": 335742464,
+      "checkpoint_age": 0
+    },
+    {
+      "event": "generation",
+      "unix_time": 1792992223.7233078,
+      "tag": "batch1024",
+      "attempts": 2000,
+      "batch_size": 1024,
+      "seed": 101,
+      "steps": 500,
+      "seconds": 69.21453362499597,
+      "molecules_per_second": 28.895665335780357,
+      "peak_gpu_allocated_bytes": 630679552,
+      "checkpoint_age": 0
+    },
+    {
+      "event": "generation",
+      "unix_time": 1792992306.9179766,
+      "tag": "integrated21",
+      "attempts": 2000,
+      "batch_size": 2048,
+      "seed": 221,
+      "steps": 500,
+      "seconds": 60.71188916999381,
+      "molecules_per_second": 32.942476792313,
+      "peak_gpu_allocated_bytes": 1364338176,
+      "checkpoint_age": 20
+    },
+    {
+      "event": "generation",
+      "unix_time": 1792992388.6450098,
+      "tag": "integrated22",
+      "attempts": 2000,
+      "batch_size": 2048,
+      "seed": 222,
+      "steps": 500,
+      "seconds": 61.345638888014946,
+      "molecules_per_second": 32.602154550072484,
+      "peak_gpu_allocated_bytes": 1364335104,
+      "checkpoint_age": 21
+    }
+  ],
+  "strict_20epoch_10k": {
+    "event": "strict_metrics",
+    "unix_time": 1792991807.831331,
+    "tag": "eval10000",
+    "attempts": 10000,
+    "valid_count": 8483,
+    "unique_count": 8309,
+    "novel_count": 5162,
+    "invalid_count": 801,
+    "disconnected_count": 716,
+    "validity": 0.8483,
+    "uniqueness": 0.9794883885417894,
+    "novelty": 0.621254061860633,
+    "vun": 0.5162,
+    "chemistry_seconds": 2.6649743469897658,
+    "uniqueness_seconds": 0.0005743819929193705,
+    "novelty_seconds": 0.0010805150086525828
+  },
+  "legacy_20epoch_10k": {
+    "event": "legacy_metrics",
+    "unix_time": 1792991821.9518325,
+    "tag": "eval10000",
+    "seconds": 14.11771322999266,
+    "validity": 0.9199,
+    "relaxed_validity": 0.9367,
+    "uniqueness": 0.9740578627095121,
+    "novelty": 0.6274660236738273,
+    "relaxed_vun": 0.5725
+  },
+  "strict_20epoch_2k_repetitions": {
+    "validity": {
+      "mean": 0.841,
+      "sample_std": 0.005894913061275826
+    },
+    "uniqueness": {
+      "mean": 0.9974259753487206,
+      "sample_std": 0.0006754436596002803
+    },
+    "novelty": {
+      "mean": 0.6237711170907921,
+      "sample_std": 0.02058646035468271
+    },
+    "vun": {
+      "mean": 0.5231666666666667,
+      "sample_std": 0.014020817855365401
+    }
+  },
+  "curve_evaluation_mean_seconds": 62.095993054982195,
+  "curve_evaluation_sample_std_seconds": 0.0255339223698913,
+  "final_evaluation_seconds": 311.5615315969917,
+  "projections": {
+    "median": {
+      "training_seconds": 18690.476759016747,
+      "curve_evaluations_seconds": 745.1519166597864,
+      "three_final_evaluations_seconds": 934.6845947909751,
+      "startup_seconds": 21.304809077002574,
+      "checkpoint_seconds": 6.656631366029615,
+      "total_gpu_hours": 5.666187419697373,
+      "three_training_seeds_gpu_hours": 16.998562259092118,
+      "total_with_25_percent_margin_gpu_hours": 7.082734274621715
+    },
+    "p90_epoch": {
+      "training_seconds": 19478.028568587615,
+      "curve_evaluations_seconds": 745.1519166597864,
+      "three_final_evaluations_seconds": 934.6845947909751,
+      "startup_seconds": 21.304809077002574,
+      "checkpoint_seconds": 6.656631366029615,
+      "total_gpu_hours": 5.884951811244836,
+      "three_training_seeds_gpu_hours": 17.654855433734507,
+      "total_with_25_percent_margin_gpu_hours": 7.356189764056045
+    }
+  },
+  "limitations": [
+    "One GPU and training seed; timings are not cross-hardware estimates.",
+    "Quality is from the 20-epoch checkpoint; full 1000-epoch results are unmeasured.",
+    "Freshly loaded standalone models report checkpoint_age=0; use checkpoint_load.completed_epochs=20 and training global_step=1920 for provenance.",
+    "Unused full-dataset molecular reference metrics, visualizations, FCD, queue delays, and repeated environment installation excluded from projections.",
+    "CPU metrics currently run inside the GPU allocation.",
+    "SLURM MaxRSS for the python step is used; process.time only measures the srun launcher."
+  ]
+}

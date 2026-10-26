@@ -1,0 +1,23 @@
+{
+  "submitted_utc": "2026-10-26T04:20:45.859297+00:00",
+  "setup_job_id": "11821406",
+  "a100_job_id": "11821407",
+  "dependency": "afterok:11821406",
+  "kill_on_invalid_dependency": true,
+  "run_root": "/scratch/xinyan14/motiflow-benchmarks/qm9-a100-20261026T041904Z",
+  "source_revision": "a35327f3bfa709e8da344567968004ca0e644831",
+  "gpu": "A100",
+  "gpu_count": 1,
+  "gpu_walltime_limit": "04:00:00",
+  "cpus": 8,
+  "host_memory": "64G",
+  "status_at_submission": "PENDING; setup pending, A100 waiting for dependency",
+  "final_setup_state": "FAILED",
+  "final_setup_exit_code": "1:0",
+  "failure": "No module named pip during bootstrap",
+  "final_a100_state": "CANCELLED due to failed dependency; no GPU execution",
+  "superseded_by": "qm9-a100-retry-20261026T042900Z.json",
+  "complete_summary": "results/summary.json",
+  "incremental_events": "results/events.jsonl",
+  "model_source_modified": false
+}
