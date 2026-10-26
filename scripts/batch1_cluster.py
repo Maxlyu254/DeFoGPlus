@@ -90,6 +90,9 @@ def submit(args, root, plan):
         raise RuntimeError("This batch already has submitted jobs; inspect status, do not duplicate")
     if PILOT_HOURS + 48 > plan["gpu_cap_hours"]:
         raise RuntimeError("GPU reservation exceeds budget")
+    for other in root.parent.glob("*/launch.json"):
+        if other.parent != root and json.loads(other.read_text()).get("jobs", {}).get("array"):
+            raise RuntimeError("Another batch has GPU submissions; reconcile its budget before launching a new batch")
     scripts = root / "source" / "scripts" / "slurm"
     common = ["sbatch", "--parsable", "--export=ALL,BATCH1_ROOT=" + str(root),
               "--output=" + str(root / "logs" / "%x-%A_%a.out")]

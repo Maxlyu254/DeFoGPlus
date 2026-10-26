@@ -10,6 +10,7 @@
 #SBATCH --mem=32G
 #SBATCH --time=08:00:00
 #SBATCH --signal=B:USR1@180
+#SBATCH --no-requeue
 set -euo pipefail
 : "${BATCH1_ROOT:?Pass BATCH1_ROOT}"
 source "$BATCH1_ROOT/environment.sh"

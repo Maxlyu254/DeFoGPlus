@@ -133,7 +133,7 @@ def backup_selected(root, archive):
         for source in [statistics_path, statistics_path.with_suffix(".json")]:
             target = destination/source.name
             if source.exists() and not target.exists():
-                temporary = target.with_suffix(target.suffix+".tmp")
+                temporary = target.with_name(target.name+"."+uuid.uuid4().hex+".tmp")
                 shutil.copy2(source, temporary)
                 temporary.replace(target)
     for name in ["manifest.json", "resolved-config.yaml", "checkpoint-index.json"]:

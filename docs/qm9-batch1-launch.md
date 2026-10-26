@@ -6,6 +6,13 @@ on Campus Cluster. Original model modules are unchanged; the experiment layer
 is in `src/experiments/batch1`. The agreed protocol is in
 [`qm9-batch1-plan.md`](qm9-batch1-plan.md).
 
+Local HTTPS GitHub push authentication was unavailable during preparation;
+the cluster's existing SSH GitHub authentication works. Commits can be sent
+locally with `git push xinyan14-cc:/u/xinyan14/motiflow
+HEAD:refs/heads/sync/batch1-fixes`, then fast-forwarded into the clean experiment
+branch on the cluster and pushed to `origin` there. This still transfers source
+entirely through Git. Never copy uncommitted source files over the checkout.
+
 ## Before submission
 
 Use `ssh xinyan14-cc`, then work in `/u/xinyan14/motiflow`.

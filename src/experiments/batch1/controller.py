@@ -108,6 +108,8 @@ class RunController(pl.Callback):
             self.save(trainer, model, self.completed,
                       permanent=self.completed in self.cfg.batch1.evaluation_epochs)
         if self.stop_requested:
+            if not self.index["latest"].startswith(f"epoch{self.completed:04d}-"):
+                self.save(trainer, model, self.completed, permanent=False)
             trainer.should_stop = True
 
     def save(self, trainer, model, epoch, permanent):

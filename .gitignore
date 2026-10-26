@@ -170,3 +170,7 @@ benchmarks/results/**/setup/
 *.swp
 *.swo
 timer.dat
+prior-cache/
+*.pt
+*.pkl
+*.npz
