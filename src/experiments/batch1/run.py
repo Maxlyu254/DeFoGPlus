@@ -73,6 +73,9 @@ def train(args, variant, root, resume=None, stop_after=None):
     cfg = make_config(args, variant)
     root = Path(root).resolve()
     root.mkdir(parents=True, exist_ok=True)
+    # Original RRWP utilities emit timer.dat in the current directory. Keep
+    # that and any legacy evaluator artifacts with this run, outside Git.
+    os.chdir(root)
     if (root/"manifest.json").exists() and resume is None:
         raise FileExistsError(f"Existing run {root}; use --resume or a new run ID")
     if args.device == "cuda" and not torch.cuda.is_available():
@@ -163,6 +166,10 @@ def main():
     parser.add_argument("--wandb-mode", choices=["offline", "disabled"])
     parser.add_argument("--smoke", action="store_true")
     args = parser.parse_args()
+    for name in ["data_dir", "cache_dir", "run_dir", "archive_root"]:
+        value = getattr(args, name)
+        if value:
+            setattr(args, name, str(Path(value).resolve()))
     RDLogger.DisableLog("rdApp.*")
     if args.mode == "prepare":
         cfg = make_config(args, "B0")
