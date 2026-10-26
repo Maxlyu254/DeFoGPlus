@@ -94,6 +94,9 @@ class RunLog:
             for namespace in ["train/*", "validation/*", "curve/*"]:
                 self.wandb.define_metric(namespace, step_metric="completed_epoch")
             self.wandb.define_metric("completed_epoch")
+            self.wandb.define_metric("train/optimizer_step")
+            self.wandb.define_metric("train/cumulative_training_seconds")
+            self.wandb.define_metric("final/*", step_metric="final/repeat")
         self.write("events", event="attempt_start")
 
     def write(self, stream, **row):

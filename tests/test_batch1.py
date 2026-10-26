@@ -1,5 +1,7 @@
 """Math, symmetry, metric identities, and baseline parity without dataset access."""
 import importlib.util
+import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -167,6 +169,26 @@ class FrozenEndpointTest(unittest.TestCase):
                                                    x, torch.empty(0), torch.empty(0), mask)
         torch.testing.assert_close(out.X, x)
         self.assertEqual(labels.X.tolist(), [[0, 2, -1]])
+
+
+class OfflineTelemetryTest(unittest.TestCase):
+    def test_scalar_session_stays_offline_and_records_local_rows(self):
+        from omegaconf import OmegaConf
+        from experiments.batch1.storage import RunLog
+        cfg = OmegaConf.create(dict(
+            augmentation=dict(id="B0"), train=dict(seed=0),
+            batch1=dict(wandb_mode="offline", wandb_entity=None,
+                        wandb_project="defog-batch1-offline-selftest")))
+        with tempfile.TemporaryDirectory() as root, patch.dict(os.environ, {"WANDB_MODE": "disabled"}):
+            log = RunLog(root, cfg, dict(logical_run_id="offline-selftest"))
+            self.assertTrue(log.wandb.settings._offline)
+            log.write("train", completed_epoch=1, optimizer_step=1, node_ce=.5)
+            log.finish(dict(status="passed"))
+            sessions = list((Path(root)/"wandb").glob("offline-run-*/*.wandb"))
+            self.assertEqual(len(sessions), 1)
+            self.assertGreater(sessions[0].stat().st_size, 0)
+            row = json.loads((Path(root)/"metrics"/"train.jsonl").read_text())
+            self.assertEqual((row["completed_epoch"], row["node_ce"]), (1, .5))
 
 
 if __name__ == "__main__":

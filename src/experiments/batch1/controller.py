@@ -181,4 +181,12 @@ class RunController(pl.Callback):
                        note="One training seed; repetitions measure sampling variability only.")
         atomic_json(self.root/"metrics"/"summary.json", summary)
         backup_selected(self.root, self.archive)
-        self.run_log.finish({"status": "completed", "best_epoch": self.best_epoch})
+        dashboard_summary = dict(status="completed", best_epoch=self.best_epoch,
+                                 best_validation_vun=self.best_vun)
+        for role, checkpoint_name in roles.items():
+            if checkpoint_name in all_results:
+                for metric, values in all_results[checkpoint_name]["aggregate"].items():
+                    for statistic, value in values.items():
+                        if value is not None:
+                            dashboard_summary[f"{role}/{metric}/{statistic}"] = value
+        self.run_log.finish(dashboard_summary)
