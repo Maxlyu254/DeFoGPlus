@@ -33,7 +33,17 @@ W&B read-only authentication was verified with SDK 0.20.1 after explicitly
 sourcing `/u/xinyan14/.config/defog/wandb-env.sh`. The file is owner-readable/
 writable (0600); do not print, copy into Git, or log its contents. Default entity:
 `maxlyu254-university-of-illinois-urbana-champaign`. New SSH sessions/jobs must
-source the file explicitly. No W&B run or project write was created by the check.
+source the file explicitly. No cloud upload was created by the authentication check.
+
+Implementation is on `experiments/qm9-structural-priors-batch1`, based on `year2`.
+See `docs/qm9-batch1-launch.md`, `scripts/batch1.py`,
+`scripts/batch1_cluster.py`, and `scripts/slurm/batch1-*.sbatch`.
+The helper stages immutable Git archives and defaults to dry-run submission;
+only `submit --submit` submits jobs. The user explicitly requested preparation
+without launching jobs. Do not submit until subsequently authorized.
+Artifacts/caches stay outside Git under `/scratch/xinyan14/motiflow-experiments/`;
+selected checkpoint/metric backups use `/u/xinyan14/motiflow-artifacts/`.
+Code is edited locally and transferred with Git, including future fixes.
 
 - The objective is to measure final validity, uniqueness, novelty, and their
   combined yield (VUN), as well as their evolution through training epochs.
@@ -46,10 +56,10 @@ source the file explicitly. No W&B run or project write was created by the check
 - The current checkout includes `pixi.toml`, `pixi.lock`, and `pyproject.toml`.
   Earlier discussion of a Python 3.9-only setup predates inspection of this
   branch's updated environment; inspect current environment files first.
-- Research model variants remain unimplemented. The benchmark adds a separate
-  strict evaluator, with legacy metrics retained; the model source is unchanged.
+- B0/B1/A0/A1/M0/M1 are implemented in `src/experiments/batch1`; original model
+  modules remain unchanged. D0/D1/A2 remain unimplemented. New full experiments
+  have not been launched. The benchmark retains strict and legacy evaluators.
   Pilot scores are from 20-22 epochs, not a fully trained model. At 20 epochs and
   10k attempts, strict connected V/U/N/VUN = 84.83/97.95/62.13/51.62 percent;
   legacy relaxed scores use a different acceptance policy. Raw standalone
   checkpoint_age=0 is a logging artifact; provenance establishes epoch 20.
-

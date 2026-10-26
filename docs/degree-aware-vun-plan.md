@@ -10,13 +10,20 @@ their combined yield (VUN). Measure both final results and learning curves.
 
 The user previously developed Motiflow on top of DeFoG using motif and other
 structural information. This study starts from the `year2` DeFoG baseline,
-without those older motif extensions. The local checkout currently reports
-`year2` at `a35327f`; the cluster checkout was switched to that branch during
-this conversation. Recheck these facts before future synchronization.
+without those older motif extensions. The baseline is `year2` at `a35327f`.
+Implementation is now on `experiments/qm9-structural-priors-batch1` locally and
+on Campus Cluster, synchronized through Git. Recheck working-tree state before
+future synchronization.
 
-Research model variants remain unimplemented. A vanilla benchmark harness and
-separate strict evaluator now exist in `benchmarks/`; the model source remains
-unchanged. CPU preparation job 11821406 and dependent A100 job 11821407 were
+B0/B1/A0/A1/M0/M1 are implemented in `src/experiments/batch1`, with source configs,
+mathematical tests, checkpoint recovery, strict/legacy evaluation, offline W&B,
+and guarded Slurm scripts. Original model modules remain unchanged. D0/D1/A2
+are not implemented. See `docs/qm9-batch1-plan.md` and
+`docs/qm9-batch1-launch.md`; the current scope is six 1000-epoch runs with one
+seed and a roughly 50-GPU-hour envelope, superseding the execution order below.
+No new Slurm jobs have been submitted during implementation; the user requested
+preparation only. A vanilla benchmark harness and strict evaluator exist in
+`benchmarks/`. CPU preparation job 11821406 and dependent A100 job 11821407 were
 submitted on 2026-10-26 UTC. Setup failed for missing pip and the GPU dependency
 was canceled without GPU use. After installer bootstrapping was repaired, CPU
 job 11822422 and dependent A100 job 11822489 completed successfully on retry.
@@ -379,9 +386,8 @@ Implementation requirements:
 9. Validate probability normalization, t=0/t=1 endpoints, masking, symmetry,
    reduction to the shared-prior baseline, condition persistence, and metric
    counts when implementing these consequential changes.
-10. Keep new IDs/configuration fields distinct from existing supported Hydra
-    options. B1/D/A/M variants currently require implementation; they are not
-    already usable flags.
+10. Keep experiment IDs/configuration fields in the separate batch1 entry point.
+    B0/B1/A0/A1/M0/M1 are implemented there; D0/D1/A2 remain future work.
 
 ## Execution order
 
@@ -415,4 +421,3 @@ Secondary offers multiple GPU types with a 4-hour limit; scavenger offers idle
 GPUs with a 24-hour limit and preemption. Recheck Slurm configuration and access
 before scheduling. Start with single-GPU jobs; baseline configuration says
 multi-GPU is unsupported. Slurm limits and installed environments may change.
-

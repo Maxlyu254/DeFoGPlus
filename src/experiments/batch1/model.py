@@ -120,6 +120,16 @@ class Batch1Model(GraphDiscreteFlowModel):
                     composition_distance=float((current_counts-initial_counts).abs().sum(-1).div(2*mask.sum(-1)).mean()),
                     edge_density=float((adjacency & pairs).sum()/pairs.sum().clamp_min(1)))
 
+    def sample_p_zs_given_zt(self, t, s, X_t, E_t, y_t, node_mask):
+        one_hot, discrete = super().sample_p_zs_given_zt(t, s, X_t, E_t, y_t, node_mask)
+        if self.atoms_mode == "fixed":
+            # The reference sampler replaces BOTH categorical proposals with
+            # network predictions at s=1. Zero node rates alone do not freeze
+            # atoms at that endpoint, so enforce the condition after every step.
+            one_hot.X = X_t.clone()
+            discrete.X = X_t.argmax(-1).masked_fill(~node_mask, -1).type_as(discrete.X)
+        return one_hot, discrete
+
     @torch.no_grad()
     def sample_conditioned(self, sizes, reference=None, trace=False):
         b, n = len(sizes), int(sizes.max())

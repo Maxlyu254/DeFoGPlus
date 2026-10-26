@@ -4,6 +4,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT), str(ROOT/"src")]
@@ -146,6 +147,26 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(result["validity"]*result["uniqueness"]*result["novelty"], .2)
         self.assertEqual(diagnostics["atom_change_fraction"], 0)
         self.assertEqual(diagnostics["composition_change_fraction"], 0)
+
+
+class FrozenEndpointTest(unittest.TestCase):
+    def test_original_endpoint_replacement_cannot_change_fixed_atoms(self):
+        from experiments.batch1.model import Batch1Model
+        from graph_discrete_flow_model import GraphDiscreteFlowModel
+        model = Batch1Model.__new__(Batch1Model)
+        torch.nn.Module.__init__(model)
+        model.atoms_mode = "fixed"
+        x = F.one_hot(torch.tensor([[0, 2, 0]]), 4).float()
+        mask = torch.tensor([[True, True, False]])
+        x *= mask[..., None]
+        wrong = F.one_hot(torch.tensor([[1, 3, 1]]), 4).float()
+        proposal = PlaceHolder(X=wrong, E=torch.empty(0), y=torch.empty(0))
+        collapsed = PlaceHolder(X=wrong.argmax(-1).float(), E=torch.empty(0), y=torch.empty(0))
+        with patch.object(GraphDiscreteFlowModel, "sample_p_zs_given_zt", return_value=(proposal, collapsed)):
+            out, labels = model.sample_p_zs_given_zt(torch.tensor([[.9]]), torch.ones(1, 1),
+                                                   x, torch.empty(0), torch.empty(0), mask)
+        torch.testing.assert_close(out.X, x)
+        self.assertEqual(labels.X.tolist(), [[0, 2, -1]])
 
 
 if __name__ == "__main__":

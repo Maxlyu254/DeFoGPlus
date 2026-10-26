@@ -1,7 +1,9 @@
 # First molecular ablation batch: six configurations, approximately 50 GPU-hours
 
-Updated 2026-10-26 following the user's request. This is the implementation and
-execution plan, not a claim that new variants have been built or jobs launched.
+Updated 2026-10-26 following the user's request. The six variants and guarded
+launch scripts are now implemented on `experiments/qm9-structural-priors-batch1`.
+See [`qm9-batch1-launch.md`](qm9-batch1-launch.md) for current launch/storage
+instructions. No new Slurm jobs have been submitted during implementation.
 It supersedes the earlier proposed four-model/200-epoch screen as the current
 scope. The nine-model/three-seed study remains a reference only.
 
@@ -239,11 +241,12 @@ with a small test before relying on sync/resume features.
 ## Code management and reproducibility
 
 Develop locally on a new branch from year2, proposed
-`experiments/qm9-structural-priors-batch1`. Preserve year2 as the baseline and
+`experiments/qm9-structural-priors-batch1` (now created). Preserve year2 as the baseline and
 leave the older Motiflow branches intact. Commit tested implementation before
 launching long jobs. Source belongs in origin (the user's DeFoGPlus fork), not
-the upstream DeFoG repository. This planning turn does not create a branch,
-commit, push, cloud upload, or Slurm job.
+the upstream DeFoG repository. Implementation is committed locally and
+synchronized to Campus Cluster and origin with Git; no cloud metrics or Slurm
+jobs are created by staging code.
 
 Version in Git:
 
@@ -252,8 +255,8 @@ Version in Git:
   code, meaningful tests, environment locks and documented compatibility fixes.
 - Plans, documentation, small curated aggregate result tables/reports, and
   sanitized run-index/provenance manifests (including job IDs and artifact paths).
-- The current benchmark scripts/docs are still untracked and must be included
-  in the experiment branch before treating it as reproducible committed code.
+- Benchmark scripts/docs and curated aggregate results are included in the
+  experiment branch; raw benchmark output remains ignored.
 
 Keep outside Git:
 
