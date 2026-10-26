@@ -38,6 +38,9 @@ source the file explicitly. No cloud upload was created by the authentication ch
 Implementation is on `experiments/qm9-structural-priors-batch1`, based on `year2`.
 See `docs/qm9-batch1-launch.md`, `scripts/batch1.py`,
 `scripts/batch1_cluster.py`, and `scripts/slurm/batch1-*.sbatch`.
+Preparation verification and staged paths are in `docs/qm9-batch1-readiness.md`:
+10 CPU unit tests and all-six full-model smoke/resume checks passed. GPU checks
+are deferred to the first step of each authorized A100 allocation.
 The helper stages immutable Git archives and defaults to dry-run submission;
 only `submit --submit` submits jobs. The user explicitly requested preparation
 without launching jobs. Do not submit until subsequently authorized.

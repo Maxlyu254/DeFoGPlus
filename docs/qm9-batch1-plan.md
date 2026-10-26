@@ -4,6 +4,8 @@ Updated 2026-10-26 following the user's request. The six variants and guarded
 launch scripts are now implemented on `experiments/qm9-structural-priors-batch1`.
 See [`qm9-batch1-launch.md`](qm9-batch1-launch.md) for current launch/storage
 instructions. No new Slurm jobs have been submitted during implementation.
+Preparation checks and the staged batch path are recorded in
+[`qm9-batch1-readiness.md`](qm9-batch1-readiness.md).
 It supersedes the earlier proposed four-model/200-epoch screen as the current
 scope. The nine-model/three-seed study remains a reference only.
 
