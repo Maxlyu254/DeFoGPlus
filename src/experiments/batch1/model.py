@@ -87,11 +87,12 @@ class Batch1Model(GraphDiscreteFlowModel):
         dense = dense.mask(mask)
         noisy = self.apply_noise(dense.X, dense.E, data.y, mask)
         pred = self.forward(noisy, self.compute_extra_data(noisy), mask)
-        loss = self.train_loss(
-            masked_pred_X=pred.X[..., :0], masked_pred_E=pred.E, pred_y=pred.y,
-            true_X=dense.X[..., :0], true_E=dense.E, true_y=data.y,
-            log=batch_idx % self.log_every_steps == 0)
-        return {"loss": loss}
+        valid = dense.E.any(-1)
+        # Reuse the original edge CE accumulator and scaling. Passing a
+        # zero-width node tensor to the original joint loss has an ambiguous
+        # reshape; its node accumulator must instead remain untouched.
+        edge_loss = self.train_loss.edge_loss(pred.E[valid], dense.E[valid])
+        return {"loss": self.train_loss.lambda_train[0]*edge_loss}
 
     @torch.no_grad()
     def reconstruct_loss(self, data, time):

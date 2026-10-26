@@ -17,7 +17,7 @@ from experiments.batch1.statistics import sha256
 
 class RunController(pl.Callback):
     def __init__(self, cfg, root, log, infos, smiles, reference, indices, archive=None):
-        self.cfg, self.root, self.log = cfg, Path(root), log
+        self.cfg, self.root, self.run_log = cfg, Path(root), log
         self.infos, self.smiles, self.reference = infos, smiles, reference
         self.indices, self.archive = indices, archive
         self.completed = 0
@@ -44,7 +44,7 @@ class RunController(pl.Callback):
     def on_train_start(self, trainer, model):
         if model.batch1_loaded:
             restore_rng(model.batch1_loaded["rng"])
-            self.log.write("events", event="resume", completed_epoch=self.completed)
+            self.run_log.write("events", event="resume", completed_epoch=self.completed)
         else:
             self.evaluate_epoch(model, 0)
             self.save(trainer, model, 0, permanent=True)
@@ -64,12 +64,12 @@ class RunController(pl.Callback):
 
     def evaluate_epoch(self, model, epoch):
         losses = validation_loss(model, self.data, self.indices, self.cfg.batch1.validation_seed)
-        self.log.write("validation", completed_epoch=epoch, **losses)
+        self.run_log.write("validation", completed_epoch=epoch, **losses)
         result = evaluate_pool(
             model, self.infos, self.smiles["train"], self.reference, self.root,
-            f"curve-epoch{epoch:04d}-{self.log.attempt}", self.cfg.batch1.curve_samples,
+            f"curve-epoch{epoch:04d}-{self.run_log.attempt}", self.cfg.batch1.curve_samples,
             self.cfg.batch1.curve_seed, epoch)
-        self.curve_rows.append(self.log.write("curve", **result))
+        self.curve_rows.append(self.run_log.write("curve", **result))
         if epoch>0 and result["vun"]>self.best_vun:
             self.best_epoch, self.best_vun = epoch, result["vun"]
         export_csv(self.root/"metrics"/"curve.csv", self.curve_rows)
@@ -95,7 +95,7 @@ class RunController(pl.Callback):
         row["allocated_job_gpu_hours"] = (
             (time.time()-float(os.environ.get("BATCH1_JOB_START_UNIX", time.time())))/3600
             if model.device.type == "cuda" else 0)
-        self.train_rows.append(self.log.write("train", **row))
+        self.train_rows.append(self.run_log.write("train", **row))
         if self.completed in self.cfg.batch1.evaluation_epochs:
             self.evaluate_epoch(model, self.completed)
         if (self.completed in self.cfg.batch1.evaluation_epochs or
@@ -109,7 +109,7 @@ class RunController(pl.Callback):
     def save(self, trainer, model, epoch, permanent):
         directory = self.root/"checkpoints"
         directory.mkdir(exist_ok=True)
-        name = f"epoch{epoch:04d}-{self.log.attempt}.ckpt"
+        name = f"epoch{epoch:04d}-{self.run_log.attempt}.ckpt"
         path = directory/name
         previous = self.index["latest"]
         self.index["previous"] = previous
@@ -127,7 +127,7 @@ class RunController(pl.Callback):
         temporary.replace(path)
         self.index.setdefault("sha256", {})[name] = sha256(path)
         atomic_json(self.root/"checkpoint-index.json", self.index)
-        self.log.write("events", event="checkpoint", completed_epoch=epoch, file=name,
+        self.run_log.write("events", event="checkpoint", completed_epoch=epoch, file=name,
                        sha256=self.index["sha256"][name], bytes=path.stat().st_size,
                        seconds=time.perf_counter()-start)
         backup_selected(self.root, self.archive)
@@ -160,10 +160,10 @@ class RunController(pl.Callback):
             for repeat in range(self.cfg.batch1.final_repeats):
                 result = evaluate_pool(
                     model, self.infos, self.smiles["train"], self.reference, self.root,
-                    f"final-epoch{epoch:04d}-rep{repeat}-{self.log.attempt}",
+                    f"final-epoch{epoch:04d}-rep{repeat}-{self.run_log.attempt}",
                     self.cfg.batch1.final_samples, self.cfg.batch1.final_seed+repeat, epoch)
                 result.update(repeat=repeat, checkpoint=name)
-                rows.append(self.log.write("final", **result))
+                rows.append(self.run_log.write("final", **result))
             aggregate = {}
             for metric in ["validity", "uniqueness", "novelty", "vun"]:
                 values = [r[metric] for r in rows if r[metric] is not None]
@@ -177,4 +177,4 @@ class RunController(pl.Callback):
                        note="One training seed; repetitions measure sampling variability only.")
         atomic_json(self.root/"metrics"/"summary.json", summary)
         backup_selected(self.root, self.archive)
-        self.log.finish({"status": "completed", "best_epoch": self.best_epoch})
+        self.run_log.finish({"status": "completed", "best_epoch": self.best_epoch})
