@@ -5,6 +5,7 @@
 #SBATCH --gres=gpu:A100:1
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
+#SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
 #SBATCH --time=08:00:00
@@ -12,6 +13,7 @@
 set -euo pipefail
 : "${BATCH1_ROOT:?Pass BATCH1_ROOT}"
 source "$BATCH1_ROOT/environment.sh"
+cd "$BATCH1_ROOT"
 test -f "$BATCH1_ROOT/READY"
 variants=(B0 B1 A0 A1 M0 M1)
 variant="${variants[$SLURM_ARRAY_TASK_ID]}"

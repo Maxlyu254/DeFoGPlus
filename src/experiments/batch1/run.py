@@ -17,6 +17,7 @@ from omegaconf import OmegaConf
 from rdkit import RDLogger
 
 from experiments.batch1.controller import RunController
+from experiments.batch1.checks import smoke_invariants
 from experiments.batch1.data import components, statistics_for, build_model
 from experiments.batch1.metrics import canonical_reference
 from experiments.batch1.statistics import sha256
@@ -65,6 +66,8 @@ def signature(cfg, stats_metadata):
                    model=OmegaConf.to_container(cfg.model),
                    train=OmegaConf.to_container(cfg.train),
                    sample=OmegaConf.to_container(cfg.sample),
+                   protocol={k: v for k, v in OmegaConf.to_container(cfg.batch1).items()
+                             if not k.startswith("wandb_")},
                    statistics_sha256=stats_metadata["sha256"])
     return hashlib.sha256(json.dumps(content, sort_keys=True).encode()).hexdigest()
 
@@ -87,6 +90,8 @@ def train(args, variant, root, resume=None, stop_after=None):
     data, infos, smiles = components(cfg)
     stats, metadata = statistics_for(cfg, data, infos, args.cache_dir)
     model = build_model(cfg, data, infos, smiles, stats)
+    if args.smoke:
+        smoke_invariants(model, data)
     model.batch1_signature = signature(cfg, metadata)
     reference = canonical_reference(smiles["train"])
     generator = torch.Generator().manual_seed(cfg.batch1.validation_seed)
@@ -109,6 +114,9 @@ def train(args, variant, root, resume=None, stop_after=None):
         if resume == "latest":
             index = json.loads((root/"checkpoint-index.json").read_text())
             checkpoint_path = root/"checkpoints"/index["latest"]
+            expected = index.get("sha256", {}).get(index["latest"])
+            if expected is None or sha256(checkpoint_path) != expected:
+                raise ValueError("Latest recovery checkpoint checksum mismatch")
         else:
             checkpoint_path = Path(resume).resolve()
         checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
@@ -128,6 +136,7 @@ def train(args, variant, root, resume=None, stop_after=None):
     archive = Path(args.archive_root)/root.name if args.archive_root else None
     controller = RunController(cfg, root, log, infos, smiles, reference, indices, archive)
     controller.data = data
+    controller.resume_checkpoint = checkpoint_path
     controller.evaluation_device = args.device
     max_epochs = min(stop_after or cfg.train.n_epochs, cfg.train.n_epochs)
     trainer = pl.Trainer(
@@ -188,6 +197,19 @@ def main():
             second = train(args, variant, root, resume="latest")
             assert second["status"] == "completed" and second["completed_epochs"] == 2
             assert len(second["final_results"]) >= 1
+            index = json.loads((root/"checkpoint-index.json").read_text())
+            checkpoint = torch.load(root/"checkpoints"/index["final"], map_location="cpu", weights_only=False)
+            assert checkpoint["global_step"] == 2
+            assert checkpoint["batch1"]["completed_epochs"] == 2
+            assert "rng" in checkpoint["batch1"]
+            curves = [json.loads(line) for line in (root/"metrics"/"curve.jsonl").read_text().splitlines()]
+            assert [row["completed_epoch"] for row in curves] == [0, 1, 2]
+            if variant in ["A0", "A1"]:
+                assert all(row["atom_change_fraction"] == 0 for row in curves)
+                assert all(row["composition_change_fraction"] == 0 for row in curves)
+            for result in second["final_results"].values():
+                assert all(row["completed_epoch"] == result["completed_epoch"] for row in result["repeats"])
+            del checkpoint
         atomic_json(Path(args.run_dir)/"READY.json", dict(status="passed", configurations=CONFIGURATIONS))
     else:
         if not args.run_dir:

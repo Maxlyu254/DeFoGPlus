@@ -169,3 +169,4 @@ benchmarks/results/**/setup/
 **/wandb-env.sh
 *.swp
 *.swo
+timer.dat

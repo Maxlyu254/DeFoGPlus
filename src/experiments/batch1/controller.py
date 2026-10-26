@@ -43,6 +43,10 @@ class RunController(pl.Callback):
 
     def on_train_start(self, trainer, model):
         if model.batch1_loaded:
+            # The checksum is intentionally external to the serialized file,
+            # so the callback state inside it cannot contain its own hash.
+            path = self.resume_checkpoint
+            self.index.setdefault("sha256", {})[path.name] = sha256(path)
             restore_rng(model.batch1_loaded["rng"])
             self.run_log.write("events", event="resume", completed_epoch=self.completed)
         else:

@@ -122,6 +122,17 @@ def backup_selected(root, archive):
         return
     root, archive = Path(root), Path(archive)
     archive.mkdir(parents=True, exist_ok=True)
+    manifest = json.loads((root/"manifest.json").read_text())
+    if "statistics" in manifest:
+        statistics_path = Path(manifest["statistics"]["path"])
+        destination = archive.parent/"prior-cache"
+        destination.mkdir(exist_ok=True)
+        for source in [statistics_path, statistics_path.with_suffix(".json")]:
+            target = destination/source.name
+            if source.exists() and not target.exists():
+                temporary = target.with_suffix(target.suffix+".tmp")
+                shutil.copy2(source, temporary)
+                temporary.replace(target)
     for name in ["manifest.json", "resolved-config.yaml", "checkpoint-index.json"]:
         source = root/name
         if source.exists():

@@ -4,12 +4,14 @@
 #SBATCH --partition=IllinoisComputes
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
+#SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=4G
 #SBATCH --time=01:00:00
 set -euo pipefail
 : "${BATCH1_ROOT:?Pass BATCH1_ROOT}"
 source "$BATCH1_ROOT/environment.sh"
+cd "$BATCH1_ROOT"
 set -a
 source "$HOME/.config/defog/wandb-env.sh"
 set +a

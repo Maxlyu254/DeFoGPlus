@@ -38,6 +38,8 @@ def evaluate(samples, decoder, reference, initials=None):
     degree_sum = torch.zeros(len(decoder), dtype=torch.double)
     bond_sum = torch.zeros_like(degree_sum)
     atom_count = torch.zeros_like(degree_sum)
+    degree_histogram = [Counter() for _ in decoder]
+    bond_order_histogram = [Counter() for _ in decoder]
     compositions = Counter()
     initial_compositions = Counter()
     groups = defaultdict(lambda: {"attempts": 0, "valid": 0, "identities": set()})
@@ -51,8 +53,13 @@ def evaluate(samples, decoder, reference, initials=None):
         compositions[key] += 1
         groups[key]["attempts"] += 1
         atom_count += counts
-        degree_sum.scatter_add_(0, atoms, (edges>0).sum(-1).double())
-        bond_sum.scatter_add_(0, atoms, order[edges].sum(-1).double())
+        degree = (edges>0).sum(-1)
+        bond_orders = order[edges].sum(-1)
+        degree_sum.scatter_add_(0, atoms, degree.double())
+        bond_sum.scatter_add_(0, atoms, bond_orders.double())
+        for atom_type, neighbors, bond_order in zip(atoms.tolist(), degree.tolist(), bond_orders.tolist()):
+            degree_histogram[atom_type][str(neighbors)] += 1
+            bond_order_histogram[atom_type][str(bond_order)] += 1
         if initials is not None:
             initial = initials[index].cpu()
             initial_counts = torch.bincount(initial, minlength=len(decoder))
@@ -92,6 +99,8 @@ def evaluate(samples, decoder, reference, initials=None):
         atom_counts=atom_count.tolist(),
         mean_degree_by_atom=(degree_sum/atom_count.clamp_min(1)).tolist(),
         mean_bond_order_sum_by_atom=(bond_sum/atom_count.clamp_min(1)).tolist(),
+        degree_histogram_by_atom=[dict(values) for values in degree_histogram],
+        bond_order_histogram_by_atom=[dict(values) for values in bond_order_histogram],
         composition_histogram=dict(compositions), initial_composition_histogram=dict(initial_compositions),
         atom_change_fraction=changes/total_atoms if total_atoms else None,
         composition_change_fraction=changed_graphs/len(samples) if initials is not None and samples else None,

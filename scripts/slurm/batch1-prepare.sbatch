@@ -4,12 +4,14 @@
 #SBATCH --partition=IllinoisComputes
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
+#SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
 #SBATCH --time=01:00:00
 set -euo pipefail
 : "${BATCH1_ROOT:?Pass BATCH1_ROOT}"
 source "$BATCH1_ROOT/environment.sh"
+cd "$BATCH1_ROOT"
 export OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4
 export MPLBACKEND=Agg WANDB_MODE=disabled PYTHONUNBUFFERED=1
 export PYTHONPATH="$BATCH1_SOURCE:$BATCH1_SOURCE/src"
