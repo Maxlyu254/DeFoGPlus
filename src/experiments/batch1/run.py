@@ -109,6 +109,7 @@ def train(args, variant, root, resume=None, stop_after=None):
                     versions={x: importlib.metadata.version(x) for x in
                               ["torch", "numpy", "rdkit", "pytorch-lightning", "torch-geometric", "wandb"]},
                     note="Unused full-training-set molecular reference ratios omitted; original model/prior retained for B0.")
+    model.batch1_provenance = manifest
     checkpoint_path = None
     if resume:
         if resume == "latest":

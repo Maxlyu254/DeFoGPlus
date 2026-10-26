@@ -21,6 +21,7 @@ class Batch1Model(GraphDiscreteFlowModel):
         self._sampling_reference = None
         self.batch1_completed_epochs = 0
         self.batch1_signature = None
+        self.batch1_provenance = None
         self.batch1_loaded = None
         if self.variant != "B0":
             self.rate_matrix_designer = ConditionalRates(
@@ -36,7 +37,8 @@ class Batch1Model(GraphDiscreteFlowModel):
     def on_save_checkpoint(self, checkpoint):
         checkpoint["batch1"] = dict(schema=1, completed_epochs=self.batch1_completed_epochs,
                                     signature=self.batch1_signature, rng=rng_state(),
-                                    sampler_epoch=self.batch1_completed_epochs)
+                                    sampler_epoch=self.batch1_completed_epochs,
+                                    provenance=self.batch1_provenance)
 
     def on_load_checkpoint(self, checkpoint):
         record = checkpoint.get("batch1")
