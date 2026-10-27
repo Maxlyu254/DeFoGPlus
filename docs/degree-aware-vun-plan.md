@@ -21,8 +21,11 @@ and guarded Slurm scripts. Original model modules remain unchanged. D0/D1/A2
 are not implemented. See `docs/qm9-batch1-plan.md` and
 `docs/qm9-batch1-launch.md`; the current scope is six 1000-epoch runs with one
 seed and a roughly 50-GPU-hour envelope, superseding the execution order below.
-No new Slurm jobs have been submitted during implementation; the user requested
-preparation only. A vanilla benchmark harness and strict evaluator exist in
+After preparation, the user authorized launch: CPU job 11846895, dependent
+A100 array 11846896 (B0/B1/A0/A1/M0/M1, tasks 0-5, concurrency 2), and W&B sync
+job 11846897 were submitted. Check state before retrying; do not duplicate.
+See `docs/submissions/qm9-batch1-11846896.json`. Executed source: `cd90286`.
+A vanilla benchmark harness and strict evaluator exist in
 `benchmarks/`. CPU preparation job 11821406 and dependent A100 job 11821407 were
 submitted on 2026-10-26 UTC. Setup failed for missing pip and the GPU dependency
 was canceled without GPU use. After installer bootstrapping was repaired, CPU

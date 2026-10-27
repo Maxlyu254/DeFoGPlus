@@ -1,7 +1,12 @@
 # Batch 1 readiness: 2026-10-26
 
 The implementation is prepared for B0/B1/A0/A1/M0/M1, QM9 without explicit H,
-one seed each, 1000 epochs. **No Slurm jobs have been submitted for this batch.**
+one seed each, 1000 epochs. Following the user's launch authorization, jobs
+**11846895** (CPU preparation), **11846896** (A100 array), and **11846897**
+(W&B sync) were submitted. Executed source is `cd90286`; this documentation
+update does not modify the staged source. Initial verification found CPU
+preparation running and both dependent jobs pending. See
+[`submission metadata`](submissions/qm9-batch1-11846896.json) before retrying.
 Original DeFoG model/rate/dataset modules are unchanged from `year2`; extensions
 live in `src/experiments/batch1` on
 `experiments/qm9-structural-priors-batch1` in the user's DeFoGPlus fork.

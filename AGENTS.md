@@ -42,8 +42,12 @@ Preparation verification and staged paths are in `docs/qm9-batch1-readiness.md`:
 10 CPU unit tests and all-six full-model smoke/resume checks passed. GPU checks
 are deferred to the first step of each authorized A100 allocation.
 The helper stages immutable Git archives and defaults to dry-run submission;
-only `submit --submit` submits jobs. The user explicitly requested preparation
-without launching jobs. Do not submit until subsequently authorized.
+only `submit --submit` submits jobs. The user subsequently authorized launch:
+CPU preparation 11846895, A100 array 11846896 (tasks 0-5, concurrency 2),
+and dependent W&B sync 11846897 were submitted. Check their state before any
+retry; do not duplicate them. The executed immutable source commit is
+`cd902863f32a9a42b32f75fd95b5034e5e1eb9fc`. Submission metadata is in
+`docs/submissions/qm9-batch1-11846896.json`.
 Artifacts/caches stay outside Git under `/scratch/xinyan14/motiflow-experiments/`;
 selected checkpoint/metric backups use `/u/xinyan14/motiflow-artifacts/`.
 Code is edited locally and transferred with Git, including future fixes.
@@ -60,8 +64,8 @@ Code is edited locally and transferred with Git, including future fixes.
   Earlier discussion of a Python 3.9-only setup predates inspection of this
   branch's updated environment; inspect current environment files first.
 - B0/B1/A0/A1/M0/M1 are implemented in `src/experiments/batch1`; original model
-  modules remain unchanged. D0/D1/A2 remain unimplemented. New full experiments
-  have not been launched. The benchmark retains strict and legacy evaluators.
+  modules remain unchanged. D0/D1/A2 remain unimplemented. Batch 1 is submitted
+  under the job IDs above. The benchmark retains strict and legacy evaluators.
   Pilot scores are from 20-22 epochs, not a fully trained model. At 20 epochs and
   10k attempts, strict connected V/U/N/VUN = 84.83/97.95/62.13/51.62 percent;
   legacy relaxed scores use a different acceptance policy. Raw standalone
