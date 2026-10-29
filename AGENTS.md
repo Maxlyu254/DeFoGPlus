@@ -61,6 +61,10 @@ rank methods by best VUN. Read `docs/qm9-batch2-validity-plan.md`: A0/A1 learn
 validity faster early; M0/M1 have a small unconfirmed final-validity advantage;
 isolated edge-prior changes show no clear validity benefit. The proposed
 100-epoch multi-seed follow-up is not submitted or authorized for launch.
+The user then allocated a fresh 50-hour batch budget and requested training new
+seeds until validity and VUN mostly stabilize. Read
+`docs/qm9-batch2-convergence-plan.md` instead of the superseded 100-epoch scope.
+Current proposal: B0/M0/M1 seeds 1,2 plus A0 seed 1; no new jobs submitted.
 Artifacts/caches stay outside Git under `/scratch/xinyan14/motiflow-experiments/`;
 selected checkpoint/metric backups use `/u/xinyan14/motiflow-artifacts/`.
 Code is edited locally and transferred with Git, including future fixes.

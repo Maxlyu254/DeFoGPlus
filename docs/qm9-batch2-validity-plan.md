@@ -1,5 +1,9 @@
 # Validity-first reassessment and proposed batch 2
 
+The reassessment below remains applicable. Its budget-limited 100-epoch batch
+proposal is superseded by the user's fresh 50-hour budget and convergence goal:
+see [`current convergence plan`](qm9-batch2-convergence-plan.md).
+
 Updated 2026-10-28 following the user's clarification. This is a proposal,
 not authorization to implement or submit a new experiment batch.
 

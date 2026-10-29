@@ -15,6 +15,12 @@ variant-ranking objective by itself. See `docs/qm9-batch2-validity-plan.md` for
 the reassessment and proposed confirmation study; it supersedes the suggested
 fixed-epoch-25 VUN follow-up. No follow-up jobs are authorized or submitted.
 
+Further user update: batch 2 has a fresh 50-A100-hour budget and should train
+new seeds until both validity and VUN mostly stabilize. Current proposal is
+`docs/qm9-batch2-convergence-plan.md`, superseding the 100-epoch follow-up:
+B0/M0/M1 seeds 1,2 and A0 seed 1, with late stability reviews and budgeted
+extensions. It is not a submission authorization.
+
 The user previously developed Motiflow on top of DeFoG using motif and other
 structural information. This study starts from the `year2` DeFoG baseline,
 without those older motif extensions. The baseline is `year2` at `a35327f`.
