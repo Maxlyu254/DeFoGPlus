@@ -18,4 +18,5 @@ set +a
 export WANDB_MODE=online
 # Only the explicitly named scalar/config offline sessions are synced.
 # Model/data/sample binaries are never registered as W&B artifacts.
-"$BATCH1_PYTHON" "$BATCH1_SOURCE/scripts/batch1_cluster.py" sync --batch-root "$BATCH1_ROOT"
+manager="${BATCH1_MANAGER:-$BATCH1_SOURCE/scripts/batch1_cluster.py}"
+"$BATCH1_PYTHON" "$manager" sync --batch-root "$BATCH1_ROOT"

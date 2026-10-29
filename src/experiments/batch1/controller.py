@@ -69,12 +69,16 @@ class RunController(pl.Callback):
     def evaluate_epoch(self, model, epoch):
         losses = validation_loss(model, self.data, self.indices, self.cfg.batch1.validation_seed)
         self.run_log.write("validation", completed_epoch=epoch, **losses)
+        count = (self.cfg.batch1.get("late_curve_samples", self.cfg.batch1.curve_samples)
+                 if epoch >= self.cfg.batch1.get("late_curve_from", 10**9)
+                 else self.cfg.batch1.curve_samples)
         result = evaluate_pool(
             model, self.infos, self.smiles["train"], self.reference, self.root,
-            f"curve-epoch{epoch:04d}-{self.run_log.attempt}", self.cfg.batch1.curve_samples,
-            self.cfg.batch1.curve_seed, epoch)
+            f"curve-epoch{epoch:04d}-{self.run_log.attempt}", count,
+            self.cfg.batch1.curve_seed, epoch,
+            comparison_count=self.cfg.batch1.curve_samples if count > self.cfg.batch1.curve_samples else None)
         self.curve_rows.append(self.run_log.write("curve", **result))
-        if epoch>0 and result["vun"]>self.best_vun:
+        if self.cfg.batch1.get("select_best_vun", True) and epoch>0 and result["vun"]>self.best_vun:
             self.best_epoch, self.best_vun = epoch, result["vun"]
         export_csv(self.root/"metrics"/"curve.csv", self.curve_rows)
 
@@ -154,7 +158,9 @@ class RunController(pl.Callback):
         # Trainer teardown may have moved the model to CPU. The explicit final
         # evaluation device is the same one requested for training.
         model.to(self.evaluation_device)
-        roles = {"final": self.index["final"], "best": self.index["best"]}
+        roles = {"final": self.index["final"]}
+        if self.cfg.batch1.get("select_best_vun", True):
+            roles["best"] = self.index["best"]
         all_results = {}
         for name in dict.fromkeys(roles.values()):
             if name is None:

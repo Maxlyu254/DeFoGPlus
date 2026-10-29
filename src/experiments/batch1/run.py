@@ -29,7 +29,7 @@ CONFIGURATIONS = ["B0", "B1", "A0", "A1", "M0", "M1"]
 
 def make_config(args, variant):
     with initialize_config_dir(version_base="1.3", config_dir=str(ROOT/"configs")):
-        cfg = compose(config_name="batch1", overrides=[f"augmentation={variant}"])
+        cfg = compose(config_name=getattr(args, "protocol", "batch1"), overrides=[f"augmentation={variant}"])
     cfg.dataset.datadir = str(Path(args.data_dir).resolve())
     cfg.train.seed = args.seed
     if args.smoke:
@@ -48,6 +48,9 @@ def make_config(args, variant):
         cfg.batch1.diagnostic_samples = 4
         cfg.batch1.wandb_mode = "disabled"
         cfg.batch1.recovery_every = 1
+        if "late_curve_samples" in cfg.batch1:
+            cfg.batch1.late_curve_from = 1
+            cfg.batch1.late_curve_samples = 6
     if args.wandb_mode:
         cfg.batch1.wandb_mode = args.wandb_mode
     return cfg
@@ -164,6 +167,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=["prepare", "preflight", "train"])
     parser.add_argument("--configuration", choices=CONFIGURATIONS, default="B0")
+    parser.add_argument("--protocol", choices=["batch1", "batch2"], default="batch1")
     parser.add_argument("--data-dir", required=True)
     parser.add_argument("--cache-dir", required=True)
     parser.add_argument("--run-dir")
@@ -191,13 +195,17 @@ def main():
             parser.error("--run-dir is required")
         args.smoke, args.device = True, "cpu"
         args.wandb_mode = "disabled"
-        for variant in CONFIGURATIONS:
+        variants = ["B0", "A0", "M0", "M1"] if args.protocol == "batch2" else CONFIGURATIONS
+        for variant in variants:
             root = Path(args.run_dir)/variant
             first = train(args, variant, root, stop_after=1)
             assert first["status"] == "paused" and first["completed_epochs"] == 1
             second = train(args, variant, root, resume="latest")
             assert second["status"] == "completed" and second["completed_epochs"] == 2
             assert len(second["final_results"]) >= 1
+            if args.protocol == "batch2":
+                assert set(second["checkpoint_roles"]) == {"final"}
+                assert second["best_epoch"] is None
             index = json.loads((root/"checkpoint-index.json").read_text())
             checkpoint = torch.load(root/"checkpoints"/index["final"], map_location="cpu", weights_only=False)
             assert checkpoint["global_step"] == 2
@@ -205,13 +213,16 @@ def main():
             assert "rng" in checkpoint["batch1"]
             curves = [json.loads(line) for line in (root/"metrics"/"curve.jsonl").read_text().splitlines()]
             assert [row["completed_epoch"] for row in curves] == [0, 1, 2]
+            if args.protocol == "batch2":
+                assert all(row["attempts"] == 6 and row["comparison_attempts"] == 4
+                           for row in curves[1:])
             if variant in ["A0", "A1"]:
                 assert all(row["atom_change_fraction"] == 0 for row in curves)
                 assert all(row["composition_change_fraction"] == 0 for row in curves)
             for result in second["final_results"].values():
                 assert all(row["completed_epoch"] == result["completed_epoch"] for row in result["repeats"])
             del checkpoint
-        atomic_json(Path(args.run_dir)/"READY.json", dict(status="passed", configurations=CONFIGURATIONS))
+        atomic_json(Path(args.run_dir)/"READY.json", dict(status="passed", configurations=variants, protocol=args.protocol))
     else:
         if not args.run_dir:
             parser.error("--run-dir is required")

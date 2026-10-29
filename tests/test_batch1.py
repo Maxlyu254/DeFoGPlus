@@ -171,6 +171,25 @@ class FrozenEndpointTest(unittest.TestCase):
         self.assertEqual(labels.X.tolist(), [[0, 2, -1]])
 
 
+class Batch2ProtocolTest(unittest.TestCase):
+    def test_fixed_endpoint_and_matched_baseline_settings(self):
+        from types import SimpleNamespace
+        from experiments.batch1.run import make_config
+        args = SimpleNamespace(protocol="batch2", data_dir="/tmp/qm9", seed=2,
+                               smoke=False, wandb_mode=None)
+        cfg = make_config(args, "M1")
+        self.assertEqual(cfg.train.n_epochs, 1000)
+        self.assertEqual(cfg.train.seed, 2)
+        self.assertFalse(cfg.batch1.select_best_vun)
+        self.assertEqual(cfg.batch1.late_curve_samples, 10000)
+        self.assertEqual(cfg.batch1.wandb_project, "defog-qm9-batch2")
+        args.protocol = "batch1"
+        original = make_config(args, "M1")
+        self.assertEqual(cfg.model, original.model)
+        self.assertEqual(cfg.train, original.train)
+        self.assertEqual(cfg.sample, original.sample)
+
+
 class OfflineTelemetryTest(unittest.TestCase):
     def test_scalar_session_stays_offline_and_records_local_rows(self):
         from omegaconf import OmegaConf

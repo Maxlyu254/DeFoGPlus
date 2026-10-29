@@ -57,7 +57,7 @@ def generate(model, count, batch_size, seed):
 
 
 def evaluate_pool(model, infos, training_smiles, reference, root, tag, count, seed,
-                  completed_epoch, legacy=True):
+                  completed_epoch, legacy=True, comparison_count=None):
     directory = Path(root)/"samples"/tag
     directory.mkdir(parents=True, exist_ok=True)
     samples, initials, traces, generation_seconds = generate(
@@ -69,6 +69,11 @@ def evaluate_pool(model, infos, training_smiles, reference, root, tag, count, se
     temporary.replace(directory/"graphs.pkl")
     serialization_seconds = time.perf_counter()-start
     result, diagnostics, compositions, identities = evaluate(samples, infos.atom_decoder, reference, initials)
+    if comparison_count is not None:
+        subset, _, _, _ = evaluate(samples[:comparison_count], infos.atom_decoder,
+                                   reference, initials[:comparison_count])
+        atomic_json(directory/"comparison-subset.json", subset)
+        result.update({"comparison_"+key: value for key, value in subset.items()})
     result.update(completed_epoch=int(completed_epoch), sampling_seed=seed,
                   checkpoint_weights_sha256=weight_fingerprint(model),
                   generation_seconds=generation_seconds, serialization_seconds=serialization_seconds,

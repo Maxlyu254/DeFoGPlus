@@ -1,0 +1,11 @@
+defaults:
+  - batch1
+  - _self_
+
+general:
+  name: batch2
+batch1:
+  select_best_vun: false
+  late_curve_from: 400
+  late_curve_samples: 10000
+  wandb_project: defog-qm9-batch2

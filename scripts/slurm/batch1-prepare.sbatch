@@ -17,8 +17,10 @@ export MPLBACKEND=Agg WANDB_MODE=disabled PYTHONUNBUFFERED=1
 export PYTHONPATH="$BATCH1_SOURCE:$BATCH1_SOURCE/src"
 "$BATCH1_PYTHON" -m unittest discover -s "$BATCH1_SOURCE/tests" -p 'test_batch1.py' -v
 "$BATCH1_PYTHON" "$BATCH1_SOURCE/scripts/batch1.py" prepare \
+    --protocol "${BATCH1_PROTOCOL:-batch1}" \
     --data-dir "$BATCH1_DATA" --cache-dir "$BATCH1_CACHE"
 "$BATCH1_PYTHON" "$BATCH1_SOURCE/scripts/batch1.py" preflight \
+    --protocol "${BATCH1_PROTOCOL:-batch1}" \
     --data-dir "$BATCH1_DATA" --cache-dir "$BATCH1_CACHE" \
     --run-dir "$BATCH1_ROOT/cpu-preflight" --threads 4
 test -f "$BATCH1_ROOT/cpu-preflight/READY.json"

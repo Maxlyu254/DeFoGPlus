@@ -16,9 +16,15 @@ set -euo pipefail
 source "$BATCH1_ROOT/environment.sh"
 cd "$BATCH1_ROOT"
 test -f "$BATCH1_ROOT/READY"
-variants=(B0 B1 A0 A1 M0 M1)
-variant="${variants[$SLURM_ARRAY_TASK_ID]}"
-run_root="$BATCH1_ROOT/runs/$variant-seed0"
+protocol="${BATCH1_PROTOCOL:-batch1}"
+if [[ -n "${BATCH1_TASK_FILE:-}" ]]; then
+    read -r variant seed < <(sed -n "$((SLURM_ARRAY_TASK_ID+1))p" "$BATCH1_TASK_FILE")
+else
+    variants=(B0 B1 A0 A1 M0 M1)
+    variant="${variants[$SLURM_ARRAY_TASK_ID]}"
+    seed=0
+fi
+run_root="$BATCH1_ROOT/runs/$variant-seed$seed"
 mkdir -p "$run_root/logs"
 # Never enable shell tracing here: credentials stay private and out of logs.
 set -a
@@ -62,11 +68,13 @@ run_step() {
 # Each long run first exercises the full architecture, backward pass, GPU
 # sampler, checkpointing and strict/legacy evaluators on a tiny two-epoch pool.
 run_step "$BATCH1_PYTHON" "$BATCH1_SOURCE/scripts/batch1.py" train --smoke \
+    --protocol "$protocol" --seed "$seed" \
     --configuration "$variant" --device cuda --threads 4 --wandb-mode disabled \
     --data-dir "$BATCH1_DATA" --cache-dir "$BATCH1_CACHE" \
     --run-dir "$BATCH1_ROOT/gpu-smoke/$variant-${SLURM_JOB_ID}"
 step=1
 run_step "$BATCH1_PYTHON" "$BATCH1_SOURCE/scripts/batch1.py" train \
+    --protocol "$protocol" --seed "$seed" \
     --configuration "$variant" --device cuda --threads 4 --wandb-mode offline \
     --data-dir "$BATCH1_DATA" --cache-dir "$BATCH1_CACHE" \
     --run-dir "$run_root" --archive-root "$BATCH1_ARCHIVE"
