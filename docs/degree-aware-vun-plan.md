@@ -25,6 +25,16 @@ After preparation, the user authorized launch: CPU job 11846895, dependent
 A100 array 11846896 (B0/B1/A0/A1/M0/M1, tasks 0-5, concurrency 2), and W&B sync
 job 11846897 were submitted. Check state before retrying; do not duplicate.
 See `docs/submissions/qm9-batch1-11846896.json`. Executed source: `cd90286`.
+All six runs subsequently completed 1000 epochs and 96,000 optimizer steps;
+preparation/training/W&B sync completed with exit 0:0. Assessment:
+`docs/results/qm9-batch1-11846896/report.md`. Actual allocation: 37.85 A100-hours,
+38.37 including pilot. All VUN-selected epochs are 10-25. Epoch-1000 strict
+10k VUN means: B0 30.07%, B1 30.57%, A0 29.03%, A1 28.87%, M0 31.65%,
+M1 32.19%; selected-checkpoint fresh VUN means span 51.94%-55.79%.
+Validity rises toward 99% while novelty falls; this alone does not prove
+overfitting. Edge-prior effects are small/inconsistent within matched pairs.
+One training seed; repeated sampling is not training-seed replication.
+No follow-up experiments were submitted during assessment.
 A vanilla benchmark harness and strict evaluator exist in
 `benchmarks/`. CPU preparation job 11821406 and dependent A100 job 11821407 were
 submitted on 2026-10-26 UTC. Setup failed for missing pip and the GPU dependency

@@ -48,6 +48,13 @@ and dependent W&B sync 11846897 were submitted. Check their state before any
 retry; do not duplicate them. The executed immutable source commit is
 `cd902863f32a9a42b32f75fd95b5034e5e1eb9fc`. Submission metadata is in
 `docs/submissions/qm9-batch1-11846896.json`.
+All six tasks completed 1000 epochs/96,000 steps; preparation and W&B sync also
+completed with exit 0:0. Assessment and plots:
+`docs/results/qm9-batch1-11846896/report.md`. Total allocation was 37.85 A100-hours,
+38.37 including the pilot. All VUN-selected checkpoints are at epochs 10-25;
+novelty/VUN decline toward epoch 1000 despite rising validity. Best final VUN:
+M1 32.19%, versus M0 31.65% and B0 30.07%. One training seed only. Do not infer
+training-seed significance or launch follow-ups without authorization.
 Artifacts/caches stay outside Git under `/scratch/xinyan14/motiflow-experiments/`;
 selected checkpoint/metric backups use `/u/xinyan14/motiflow-artifacts/`.
 Code is edited locally and transferred with Git, including future fixes.

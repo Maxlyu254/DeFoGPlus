@@ -73,6 +73,7 @@ def analyze(root, output):
         assert summary["status"] == "completed" and summary["completed_epochs"] == 1000
         assert manifest["git_commit"] == launch["git_commit"] and manifest["training_seed"] == 0
         reference_fingerprints.append((manifest["statistics"]["sha256"],
+                                       json.dumps(manifest["statistics"]["dataset_hashes"], sort_keys=True),
                                        manifest["canonical_training_reference_sha256"],
                                        manifest["validation_indices_sha256"]))
         curves = rows(run/"metrics/curve.jsonl")
@@ -170,11 +171,11 @@ def plots(report, curves, output):
         for v in VARIANTS:
             data = [r for r in curves if r["configuration"] == v]
             ax.plot([r["completed_epoch"] for r in data],
-                    [100*(r[metric] or 0) for r in data], color=colors[v],
+                    [100*r[metric] if r[metric] is not None else float("nan") for r in data], color=colors[v],
                     linestyle="--" if v.endswith("1") else "-", marker=".", label=v)
         ax.set_xscale("symlog", linthresh=1)
         ax.set_xlabel("Completed epoch (log scale after 1)")
-        ax.set_ylabel(metric.upper() if metric == "vun" else metric.capitalize())
+        ax.set_ylabel((metric.upper() if metric == "vun" else metric.capitalize())+" (%)")
         ax.set_ylim(0, 102)
         ax.grid(alpha=.2)
     axes[0,0].legend(ncol=3, fontsize=9)

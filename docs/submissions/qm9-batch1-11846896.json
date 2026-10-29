@@ -37,5 +37,15 @@
     "array": "PENDING (Dependency)",
     "sync": "PENDING (Dependency)"
   },
-  "note": "Initial states are submission-time observations, not current status. No automatic retries. Check launch.json, squeue and sacct before taking action."
+  "note": "Initial states are submission-time observations, not current status. No automatic retries. Check launch.json, squeue and sacct before taking action.",
+  "final_assessment_date": "2026-10-28",
+  "final_verified_states": {
+    "prepare": "COMPLETED (exit 0:0)",
+    "array_tasks_0_to_5": "COMPLETED (exit 0:0)",
+    "sync": "COMPLETED (exit 0:0)"
+  },
+  "completed_epochs_per_model": 1000,
+  "allocated_gpu_hours": 37.853611111111114,
+  "allocated_gpu_hours_including_pilot": 38.37,
+  "assessment_path": "docs/results/qm9-batch1-11846896/report.md"
 }

@@ -7,6 +7,11 @@ one seed each, 1000 epochs. Following the user's launch authorization, jobs
 update does not modify the staged source. Initial verification found CPU
 preparation running and both dependent jobs pending. See
 [`submission metadata`](submissions/qm9-batch1-11846896.json) before retrying.
+Completion update, 2026-10-28: all six 1000-epoch tasks, CPU preparation and W&B
+sync completed with exit 0:0. [Results and assessment](results/qm9-batch1-11846896/report.md)
+include audited metrics, learning curves and actual cost. GPU checks below
+describe what was deferred at preparation time; they have now passed in all
+six allocations.
 Original DeFoG model/rate/dataset modules are unchanged from `year2`; extensions
 live in `src/experiments/batch1` on
 `experiments/qm9-structural-priors-batch1` in the user's DeFoGPlus fork.
