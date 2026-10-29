@@ -1,5 +1,8 @@
 # Batch 2 proposal: fresh 50 A100-hours, validity-first convergence
 
+Superseded: the user authorized seven fixed-1000-epoch runs queued together,
+without drift checks. See `docs/qm9-batch2-launch.md` for the current protocol.
+
 Updated 2026-10-28. User requested a fresh 50-hour budget and new training seeds
 continued until validity and VUN mostly stabilize. This supersedes the proposed
 100-epoch budget-limited follow-up. It is a plan, not a job submission.

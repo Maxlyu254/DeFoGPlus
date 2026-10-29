@@ -21,6 +21,11 @@ new seeds until both validity and VUN mostly stabilize. Current proposal is
 B0/M0/M1 seeds 1,2 and A0 seed 1, with late stability reviews and budgeted
 extensions. It is not a submission authorization.
 
+Latest instruction: implement, synchronize and submit all seven runs together,
+each for exactly 1000 epochs. No drift checks or adaptive extensions. No
+artificial concurrency cap. Current protocol: `docs/qm9-batch2-launch.md`.
+Batch2 uses a fresh 50-hour ledger and a 49-hour reservation (seven 7-hour tasks).
+
 The user previously developed Motiflow on top of DeFoG using motif and other
 structural information. This study starts from the `year2` DeFoG baseline,
 without those older motif extensions. The baseline is `year2` at `a35327f`.

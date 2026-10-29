@@ -65,6 +65,11 @@ The user then allocated a fresh 50-hour batch budget and requested training new
 seeds until validity and VUN mostly stabilize. Read
 `docs/qm9-batch2-convergence-plan.md` instead of the superseded 100-epoch scope.
 Current proposal: B0/M0/M1 seeds 1,2 plus A0 seed 1; no new jobs submitted.
+Latest user instruction authorizes implementation and submission of those seven
+runs, all queued together, for exactly 1000 epochs, without drift checks.
+Read `docs/qm9-batch2-launch.md` and use `scripts/batch2_cluster.py`. Batch2 has
+its own fresh budget and uses `--array=0-6` with no throttle. Check submission
+state before retrying; never duplicate the jobs.
 Artifacts/caches stay outside Git under `/scratch/xinyan14/motiflow-experiments/`;
 selected checkpoint/metric backups use `/u/xinyan14/motiflow-artifacts/`.
 Code is edited locally and transferred with Git, including future fixes.
