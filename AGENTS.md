@@ -55,6 +55,12 @@ completed with exit 0:0. Assessment and plots:
 novelty/VUN decline toward epoch 1000 despite rising validity. Best final VUN:
 M1 32.19%, versus M0 31.65% and B0 30.07%. One training seed only. Do not infer
 training-seed significance or launch follow-ups without authorization.
+The user subsequently clarified priorities: **final validity and validity
+learning speed are primary; VUN is secondary overall performance**. Do not
+rank methods by best VUN. Read `docs/qm9-batch2-validity-plan.md`: A0/A1 learn
+validity faster early; M0/M1 have a small unconfirmed final-validity advantage;
+isolated edge-prior changes show no clear validity benefit. The proposed
+100-epoch multi-seed follow-up is not submitted or authorized for launch.
 Artifacts/caches stay outside Git under `/scratch/xinyan14/motiflow-experiments/`;
 selected checkpoint/metric backups use `/u/xinyan14/motiflow-artifacts/`.
 Code is edited locally and transferred with Git, including future fixes.

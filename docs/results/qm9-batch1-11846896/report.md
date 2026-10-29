@@ -1,5 +1,11 @@
 # QM9 structural-prior batch 1: results and assessment
 
+Priority update: the user clarified that final validity and validity learning
+speed are primary, with VUN as a secondary overall metric. The original
+VUN-centered interpretation below is historical. Read the
+[validity-first reassessment and next-batch proposal](../../qm9-batch2-validity-plan.md).
+The numerical results and figures below remain applicable.
+
 Assessed 2026-10-28. Executed source: `cd902863f32a9a42b32f75fd95b5034e5e1eb9fc`. Training seed 0; six configurations; QM9 without explicit hydrogens.
 
 All six tasks completed 1000 epochs and 96,000 optimizer steps. CPU preparation 11846895, GPU array 11846896 and W&B sync 11846897 completed with exit 0:0. No new experiments were submitted during this assessment.
@@ -75,7 +81,13 @@ Working run artifacts occupy approximately 14 GiB; selected/recovery home backup
 
 ## Recommended next decision
 
-Do not extend these runs beyond 1000 epochs for the VUN objective. If further experiments are authorized, prioritize matched M0/M1 confirmation around the useful early training window, with B0 as a reference, rather than another six-model 1000-epoch batch. First inspect early-checkpoint molecule/distribution quality using the already saved pools and establish the acceptable validity threshold. A focused second training seed would test robustness; repeating only sampling cannot do so. No follow-up jobs were launched by this assessment.
+Under the clarified validity-first objective, prioritize B0/A0/M0/M1 replication:
+A0 tests the apparent early-validity advantage, M0 the small mature-validity
+advantage, and M1 the isolated reference-based edge-prior change. Compare fixed
+endpoints and validity curves, with VUN at the same checkpoints. The proposed
+budget-limited 100-epoch follow-up and the separate cost of 1000-epoch
+confirmation are in the linked validity-first plan. No follow-up jobs were
+launched by this assessment.
 
 ## Artifacts and reproduction
 

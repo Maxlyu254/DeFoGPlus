@@ -1,5 +1,11 @@
 # First molecular ablation batch: six configurations, approximately 50 GPU-hours
 
+Current research priority (user clarification, 2026-10-28): final validity and
+validity learning speed are primary; VUN is secondary overall performance at
+matched checkpoints. The best-VUN selection protocol below documents the
+completed first batch, not the proposed next batch. See
+[`validity-first reassessment and proposal`](qm9-batch2-validity-plan.md).
+
 Updated 2026-10-26 following the user's request. The six variants and guarded
 launch scripts are now implemented on `experiments/qm9-structural-priors-batch1`.
 See [`qm9-batch1-launch.md`](qm9-batch1-launch.md) for current launch/storage

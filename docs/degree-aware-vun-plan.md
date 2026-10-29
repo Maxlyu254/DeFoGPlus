@@ -8,6 +8,13 @@ Investigate how graph structural information in the initial distribution and
 conditioning affects molecular validity (V), uniqueness (U), novelty (N), and
 their combined yield (VUN). Measure both final results and learning curves.
 
+User priority clarification (2026-10-28): final strict validity and the validity
+learning curve/learning efficiency are primary. VUN is a secondary overall
+performance diagnostic at matched checkpoints, not a checkpoint-selection or
+variant-ranking objective by itself. See `docs/qm9-batch2-validity-plan.md` for
+the reassessment and proposed confirmation study; it supersedes the suggested
+fixed-epoch-25 VUN follow-up. No follow-up jobs are authorized or submitted.
+
 The user previously developed Motiflow on top of DeFoG using motif and other
 structural information. This study starts from the `year2` DeFoG baseline,
 without those older motif extensions. The baseline is `year2` at `a35327f`.
