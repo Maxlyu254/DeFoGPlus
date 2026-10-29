@@ -25,6 +25,9 @@ Latest instruction: implement, synchronize and submit all seven runs together,
 each for exactly 1000 epochs. No drift checks or adaptive extensions. No
 artificial concurrency cap. Current protocol: `docs/qm9-batch2-launch.md`.
 Batch2 uses a fresh 50-hour ledger and a 49-hour reservation (seven 7-hour tasks).
+Submitted: preparation 11899422, A100 array 11899423, W&B sync 11899424;
+immutable executed source `3bd423f`. See `docs/submissions/qm9-batch2-11899423.json`
+before any retry; no duplicate submission.
 
 The user previously developed Motiflow on top of DeFoG using motif and other
 structural information. This study starts from the `year2` DeFoG baseline,

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "source_commit": "3bd423fbf88d511a6a6a905ed680d71644ab97bb",
+  "protocol": "batch2",
+  "batch_root": "/scratch/xinyan14/motiflow-experiments/qm9-batch2/batch2-fixed1000-20261028",
+  "jobs": {"prepare": "11899422", "array": "11899423", "sync": "11899424"},
+  "tasks": [
+    {"array_task": 0, "configuration": "B0", "seed": 1},
+    {"array_task": 1, "configuration": "B0", "seed": 2},
+    {"array_task": 2, "configuration": "A0", "seed": 1},
+    {"array_task": 3, "configuration": "M0", "seed": 1},
+    {"array_task": 4, "configuration": "M0", "seed": 2},
+    {"array_task": 5, "configuration": "M1", "seed": 1},
+    {"array_task": 6, "configuration": "M1", "seed": 2}
+  ],
+  "epochs": 1000,
+  "array_expression": "0-6",
+  "concurrency_cap": null,
+  "gpu_task_hours": 7,
+  "reservation_gpu_hours": 49,
+  "fresh_budget_gpu_hours": 50,
+  "previous_batch_charge_gpu_hours": 0,
+  "cpu_verification": "11 unit tests and B0/A0/M0/M1 batch2 full-model smoke/resume/final-only checks passed",
+  "note": "No drift checks, extensions, best-VUN selection or automatic retries. Check current launch.json, squeue and sacct before any retry."
+}

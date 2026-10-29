@@ -3,6 +3,9 @@
 User instruction: exactly 1000 epochs, no drift checks or adaptive extension,
 and queue all seven tasks together without a user-imposed concurrency throttle.
 This supersedes the convergence proposal. Submission is authorized.
+Submitted jobs: CPU preparation **11899422**, A100 array **11899423**, and W&B
+sync **11899424**. Executed immutable source: `3bd423f`. Submission metadata:
+`docs/submissions/qm9-batch2-11899423.json`. Check state before retrying.
 
 | Array task | Configuration | Training seed |
 | --- | --- | --- |

@@ -70,6 +70,9 @@ runs, all queued together, for exactly 1000 epochs, without drift checks.
 Read `docs/qm9-batch2-launch.md` and use `scripts/batch2_cluster.py`. Batch2 has
 its own fresh budget and uses `--array=0-6` with no throttle. Check submission
 state before retrying; never duplicate the jobs.
+Batch2 is now submitted: CPU preparation 11899422, unthrottled A100 array
+11899423 (tasks 0-6), W&B sync 11899424. Executed source `3bd423f`.
+Read `docs/submissions/qm9-batch2-11899423.json` before any retry. Do not duplicate.
 Artifacts/caches stay outside Git under `/scratch/xinyan14/motiflow-experiments/`;
 selected checkpoint/metric backups use `/u/xinyan14/motiflow-artifacts/`.
 Code is edited locally and transferred with Git, including future fixes.
