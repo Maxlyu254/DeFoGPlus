@@ -45,7 +45,7 @@ def count_audit(row):
 
 def write_csv(path, records):
     with Path(path).open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(records[0]))
+        writer = csv.DictWriter(handle, fieldnames=list(records[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(records)
 
