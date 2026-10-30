@@ -63,3 +63,16 @@ python3 scripts/batch2_cluster.py status --batch-root /absolute/batch/path
 
 Development is local and synchronization uses Git. Submission records will be
 added under `docs/submissions/`. Before retrying, inspect launch.json and sacct.
+
+## Faulty-GPU retry
+
+All original GPU tasks failed before training on the same GPU on ccc0388,
+whose saved nvidia-smi output reports that a reset is required. The user has
+authorized rescheduling the same seven runs while excluding that node.
+The failed root remains intact. A new root is staged with `--retry-of` pointing
+to it and `--exclude-nodes ccc0388`; submission permits this replacement only
+after confirming all seven original tasks are FAILED and no completed summaries
+exist. Prior-attempt allocation (0.05667 hours) carries into the retry ledger,
+so the combined maximum allocation is 49.05667 hours within the 50-hour budget.
+Each allocation now checks actual CUDA tensor execution before model setup.
+There are no changes to the scientific protocol, training or evaluation.

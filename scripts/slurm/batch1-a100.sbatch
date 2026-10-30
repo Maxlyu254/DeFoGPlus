@@ -67,12 +67,14 @@ run_step() {
 }
 # Each long run first exercises the full architecture, backward pass, GPU
 # sampler, checkpointing and strict/legacy evaluators on a tiny two-epoch pool.
+run_step "$BATCH1_PYTHON" "$BATCH1_SOURCE/scripts/check_cuda.py"
+step=1
 run_step "$BATCH1_PYTHON" "$BATCH1_SOURCE/scripts/batch1.py" train --smoke \
     --protocol "$protocol" --seed "$seed" \
     --configuration "$variant" --device cuda --threads 4 --wandb-mode disabled \
     --data-dir "$BATCH1_DATA" --cache-dir "$BATCH1_CACHE" \
     --run-dir "$BATCH1_ROOT/gpu-smoke/$variant-${SLURM_JOB_ID}"
-step=1
+step=2
 run_step "$BATCH1_PYTHON" "$BATCH1_SOURCE/scripts/batch1.py" train \
     --protocol "$protocol" --seed "$seed" \
     --configuration "$variant" --device cuda --threads 4 --wandb-mode offline \

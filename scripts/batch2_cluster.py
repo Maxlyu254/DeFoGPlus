@@ -19,6 +19,18 @@ def stage(args):
     if command(["git", "-C", str(ROOT), "status", "--porcelain"]):
         raise RuntimeError("Stage only a clean committed checkout")
     root = Path(args.batch_root).resolve()
+    retry_of = str(Path(args.retry_of).resolve()) if args.retry_of else None
+    previous_charge = 0
+    if retry_of:
+        previous = Path(retry_of)
+        previous_plan = json.loads((previous/"launch.json").read_text())
+        previous_ledger = accounting(previous, previous_plan)
+        if len(previous_ledger["jobs"]) != len(TASKS) or any(
+                r["state"] != "FAILED" for r in previous_ledger["jobs"]):
+            raise RuntimeError("Retry requires all seven previous tasks to be FAILED")
+        if list((previous/"runs").glob("*/metrics/summary.json")):
+            raise RuntimeError("Previous results exist; reconcile before retry")
+        previous_charge = previous_ledger["consumed_gpu_hours"]
     root.mkdir(parents=True, exist_ok=False)
     commit = command(["git", "-C", str(ROOT), "rev-parse", "HEAD"])
     source = root/"source"
@@ -44,7 +56,9 @@ def stage(args):
                 tasks=[dict(array_task=i, configuration=v, seed=s) for i,(v,s) in enumerate(TASKS)],
                 target_epochs=1000, array_expression="0-6", concurrency_cap=None,
                 gpu_task_hours=7, reservation_gpu_hours=49, budget_gpu_hours=50,
-                previous_batch_charge_gpu_hours=0, jobs={})
+                previous_batch_charge_gpu_hours=0, retry_of=retry_of,
+                excluded_nodes=args.exclude_nodes,
+                previous_attempt_charge_gpu_hours=previous_charge, jobs={})
     write_json(root/"launch.json", plan)
     print(json.dumps(plan, indent=2))
 
@@ -61,8 +75,12 @@ def accounting(root, plan):
             gpu = re.search(r"(?:^|,)gres/gpu=(\d+)", f[3])
             records.append(dict(job_id=f[0], state=f[1], seconds=int(f[2]),
                                 allocated_gpu_hours=int(f[2])*(int(gpu.group(1)) if gpu else 0)/3600))
+    attempt_hours = sum(r["allocated_gpu_hours"] for r in records)
+    prior_hours = plan.get("previous_attempt_charge_gpu_hours", 0)
     ledger = dict(budget_gpu_hours=50, reservation_gpu_hours=49,
-                  consumed_gpu_hours=sum(r["allocated_gpu_hours"] for r in records),
+                  consumed_gpu_hours=prior_hours+attempt_hours,
+                  current_attempt_gpu_hours=attempt_hours,
+                  previous_attempt_charge_gpu_hours=prior_hours,
                   previous_batch_charge_gpu_hours=0, jobs=records)
     write_json(root/"budget-ledger.json", ledger)
     return ledger
@@ -73,8 +91,15 @@ def submit(args, root, plan):
         raise RuntimeError("Already submitted (possibly partially); inspect before retry")
     for other in root.parent.glob("*/launch.json"):
         if other.parent != root and json.loads(other.read_text()).get("jobs", {}).get("array"):
+            if str(other.parent.resolve()) == plan.get("retry_of"):
+                previous_plan = json.loads(other.read_text())
+                previous_ledger = accounting(other.parent, previous_plan)
+                if len(previous_ledger["jobs"]) == len(TASKS) and all(
+                        r["state"] == "FAILED" for r in previous_ledger["jobs"]):
+                    if not list((other.parent/"runs").glob("*/metrics/summary.json")):
+                        continue
             raise RuntimeError("Another batch-2 submission exists; reconcile before submitting")
-    assert plan["reservation_gpu_hours"] <= plan["budget_gpu_hours"]
+    assert plan["reservation_gpu_hours"] + plan.get("previous_attempt_charge_gpu_hours", 0) <= plan["budget_gpu_hours"]
     if not args.submit:
         print("Dry run: CPU checks -> seven A100 tasks (0-6, no throttle, 7h/task) -> W&B sync. No submission.")
         return
@@ -89,8 +114,11 @@ def submit(args, root, plan):
         print(key+": "+jobid, flush=True)
         return jobid
     cpu = job("prepare", ["--job-name=defog-batch2-prepare"], "batch1-prepare.sbatch")
-    gpu = job("array", ["--job-name=defog-batch2", "--time=07:00:00", "--array=0-6",
-                         "--dependency=afterok:"+cpu, "--kill-on-invalid-dep=yes"], "batch1-a100.sbatch")
+    gpu_options = ["--job-name=defog-batch2", "--time=07:00:00", "--array=0-6",
+                   "--dependency=afterok:"+cpu, "--kill-on-invalid-dep=yes"]
+    if plan.get("excluded_nodes"):
+        gpu_options.append("--exclude="+plan["excluded_nodes"])
+    gpu = job("array", gpu_options, "batch1-a100.sbatch")
     job("sync", ["--job-name=defog-batch2-sync", "--dependency=afterany:"+gpu,
                  "--kill-on-invalid-dep=yes"], "batch1-sync.sbatch")
     accounting(root, plan)
@@ -101,6 +129,8 @@ def main():
     p.add_argument("mode", choices=["stage", "submit", "status", "sync"])
     p.add_argument("--batch-root", required=True)
     p.add_argument("--submit", action="store_true")
+    p.add_argument("--retry-of", help="Stage a replacement for a fully failed batch root")
+    p.add_argument("--exclude-nodes", default="", help="Slurm node list to exclude from GPU tasks")
     args = p.parse_args()
     if args.mode == "stage":
         stage(args)

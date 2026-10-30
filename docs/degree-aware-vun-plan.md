@@ -29,6 +29,12 @@ Submitted: preparation 11899422, A100 array 11899423, W&B sync 11899424;
 immutable executed source `3bd423f`. See `docs/submissions/qm9-batch2-11899423.json`
 before any retry; no duplicate submission.
 
+Live assessment on 2026-10-29: all seven batch2 GPU tasks failed before training
+with CUDA unavailable on ccc0388; saved nvidia-smi logs report a GPU requiring
+reset. No new training or evaluation results exist. Allocated A100 time was
+0.05667 hours. See `docs/results/qm9-batch2-11899423/report.md`. No retry has
+been submitted by this assessment.
+
 The user previously developed Motiflow on top of DeFoG using motif and other
 structural information. This study starts from the `year2` DeFoG baseline,
 without those older motif extensions. The baseline is `year2` at `a35327f`.
