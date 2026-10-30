@@ -73,6 +73,13 @@ state before retrying; never duplicate the jobs.
 Batch2 is now submitted: CPU preparation 11899422, unthrottled A100 array
 11899423 (tasks 0-6), W&B sync 11899424. Executed source `3bd423f`.
 Read `docs/submissions/qm9-batch2-11899423.json` before any retry. Do not duplicate.
+All seven original batch2 tasks failed before training on a GPU requiring reset
+on ccc0388. User-authorized retry excludes that node: preparation 11917237,
+A100 array 11917238 (tasks 0-6, no throttle), sync 11917239. Source `1636edc`.
+Read `docs/submissions/qm9-batch2-retry-11917238.json` before any further retry.
+Root: `/scratch/xinyan14/motiflow-experiments/qm9-batch2/batch2-retry-20261029`.
+Failed allocation charge 0.05667 hours carries into the fresh 50-hour ledger.
+No training/evaluation protocol changes. Check these jobs; do not duplicate.
 Artifacts/caches stay outside Git under `/scratch/xinyan14/motiflow-experiments/`;
 selected checkpoint/metric backups use `/u/xinyan14/motiflow-artifacts/`.
 Code is edited locally and transferred with Git, including future fixes.

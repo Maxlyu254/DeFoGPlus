@@ -76,3 +76,11 @@ exist. Prior-attempt allocation (0.05667 hours) carries into the retry ledger,
 so the combined maximum allocation is 49.05667 hours within the 50-hour budget.
 Each allocation now checks actual CUDA tensor execution before model setup.
 There are no changes to the scientific protocol, training or evaluation.
+
+Retry submitted: preparation **11917237**, A100 array **11917238** (tasks 0-6,
+no throttle), W&B sync **11917239**. Executed immutable source: `1636edc`.
+Root: `/scratch/xinyan14/motiflow-experiments/qm9-batch2/batch2-retry-20261029`.
+Submission: `docs/submissions/qm9-batch2-retry-11917238.json`.
+Slurm confirms `ExcNodeList=ccc0388` and a seven-hour limit on the GPU array.
+Preparation was running and the dependent GPU/sync jobs pending at verification.
+Check these jobs before any further retry; do not duplicate them.

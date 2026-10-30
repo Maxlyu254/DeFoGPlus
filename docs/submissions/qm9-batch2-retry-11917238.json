@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "protocol": "batch2",
+  "git_commit": "1636edc3fd3da847c25bf843444c0fc968f9871e",
+  "settings": {
+    "BATCH1_ROOT": "/scratch/xinyan14/motiflow-experiments/qm9-batch2/batch2-retry-20261029",
+    "BATCH1_SOURCE": "/scratch/xinyan14/motiflow-experiments/qm9-batch2/batch2-retry-20261029/source",
+    "BATCH1_PYTHON": "/scratch/xinyan14/motiflow-benchmarks/qm9-a100-20261026T041904Z/environment/bin/python",
+    "BATCH1_DATA": "/scratch/xinyan14/motiflow-benchmarks/data/qm9",
+    "BATCH1_CACHE": "/scratch/xinyan14/motiflow-experiments/qm9-batch1/prior-cache",
+    "BATCH1_ARCHIVE": "/u/xinyan14/motiflow-artifacts/qm9-batch2/batch2-retry-20261029",
+    "BATCH1_PROTOCOL": "batch2",
+    "BATCH1_TASK_FILE": "/scratch/xinyan14/motiflow-experiments/qm9-batch2/batch2-retry-20261029/tasks.tsv",
+    "BATCH1_MANAGER": "/scratch/xinyan14/motiflow-experiments/qm9-batch2/batch2-retry-20261029/source/scripts/batch2_cluster.py"
+  },
+  "created_utc": "2026-10-30T03:47:13.164792+00:00",
+  "tasks": [
+    {
+      "array_task": 0,
+      "configuration": "B0",
+      "seed": 1
+    },
+    {
+      "array_task": 1,
+      "configuration": "B0",
+      "seed": 2
+    },
+    {
+      "array_task": 2,
+      "configuration": "A0",
+      "seed": 1
+    },
+    {
+      "array_task": 3,
+      "configuration": "M0",
+      "seed": 1
+    },
+    {
+      "array_task": 4,
+      "configuration": "M0",
+      "seed": 2
+    },
+    {
+      "array_task": 5,
+      "configuration": "M1",
+      "seed": 1
+    },
+    {
+      "array_task": 6,
+      "configuration": "M1",
+      "seed": 2
+    }
+  ],
+  "target_epochs": 1000,
+  "array_expression": "0-6",
+  "concurrency_cap": null,
+  "gpu_task_hours": 7,
+  "reservation_gpu_hours": 49,
+  "budget_gpu_hours": 50,
+  "previous_batch_charge_gpu_hours": 0,
+  "retry_of": "/scratch/xinyan14/motiflow-experiments/qm9-batch2/batch2-fixed1000-20261028",
+  "excluded_nodes": "ccc0388",
+  "previous_attempt_charge_gpu_hours": 0.05666666666666667,
+  "jobs": {
+    "prepare": "11917237",
+    "array": "11917238",
+    "sync": "11917239"
+  }
+}

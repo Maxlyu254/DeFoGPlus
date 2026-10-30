@@ -35,6 +35,13 @@ reset. No new training or evaluation results exist. Allocated A100 time was
 0.05667 hours. See `docs/results/qm9-batch2-11899423/report.md`. No retry has
 been submitted by this assessment.
 
+The user subsequently authorized retry excluding ccc0388. Submitted preparation
+11917237, A100 array 11917238 (all seven tasks, no throttle), and W&B sync
+11917239. Immutable source `1636edc`; new root `batch2-retry-20261029` under
+the same scratch batch2 parent. See `docs/submissions/qm9-batch2-retry-11917238.json`.
+The retry ledger includes the failed attempt's 0.05667 A100-hours. Check this
+new submission before further retries; never duplicate it.
+
 The user previously developed Motiflow on top of DeFoG using motif and other
 structural information. This study starts from the `year2` DeFoG baseline,
 without those older motif extensions. The baseline is `year2` at `a35327f`.
