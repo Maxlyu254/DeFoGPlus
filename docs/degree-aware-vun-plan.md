@@ -42,6 +42,16 @@ the same scratch batch2 parent. See `docs/submissions/qm9-batch2-retry-11917238.
 The retry ledger includes the failed attempt's 0.05667 A100-hours. Check this
 new submission before further retries; never duplicate it.
 
+Assessment on 2026-11-08: retry tasks 0-3 completed 1000 epochs/96,000 steps
+(B0 seeds1,2; A0 seed1; M0 seed1). Tasks4-6 (M0 seed2, M1 seeds1,2) failed
+before training on another GPU requiring reset, on ccc0390. Report and tables:
+`docs/results/qm9-batch2-retry-11917238/report.md`. A0's early-validity advantage
+repeats and its new seed has highest final validity (99.28%). M0's matched
+final-validity gain shrinks to 0.06 pp; M1 has no new results. Total batch2
+allocation including both attempts is 25.73972 A100-hours; 24.26028 remain.
+No additional retry was submitted during assessment. A partial retry would need
+to preserve completed runs and exclude both ccc0388 and ccc0390.
+
 The user previously developed Motiflow on top of DeFoG using motif and other
 structural information. This study starts from the `year2` DeFoG baseline,
 without those older motif extensions. The baseline is `year2` at `a35327f`.

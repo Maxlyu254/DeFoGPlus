@@ -80,6 +80,13 @@ Read `docs/submissions/qm9-batch2-retry-11917238.json` before any further retry.
 Root: `/scratch/xinyan14/motiflow-experiments/qm9-batch2/batch2-retry-20261029`.
 Failed allocation charge 0.05667 hours carries into the fresh 50-hour ledger.
 No training/evaluation protocol changes. Check these jobs; do not duplicate.
+Verified 2026-11-08: retry tasks0-3 completed 1000 epochs/96,000 steps; tasks4-6
+failed before training on a GPU requiring reset on ccc0390. Assessment:
+`docs/results/qm9-batch2-retry-11917238/report.md`. Batch2 used 25.73972 hours
+including both attempts; 24.26028 hours remain. A0's early-validity benefit
+repeats; M0's final-validity gain shrinks; M1 has no new seeds. No further retry
+submitted. A targeted retry must preserve completed runs and avoid both faulty
+nodes; the existing whole-batch retry guard refuses partial-success batches.
 Artifacts/caches stay outside Git under `/scratch/xinyan14/motiflow-experiments/`;
 selected checkpoint/metric backups use `/u/xinyan14/motiflow-artifacts/`.
 Code is edited locally and transferred with Git, including future fixes.

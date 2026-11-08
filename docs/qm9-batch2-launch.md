@@ -84,3 +84,7 @@ Submission: `docs/submissions/qm9-batch2-retry-11917238.json`.
 Slurm confirms `ExcNodeList=ccc0388` and a seven-hour limit on the GPU array.
 Preparation was running and the dependent GPU/sync jobs pending at verification.
 Check these jobs before any further retry; do not duplicate them.
+
+Assessment on 2026-11-08: preparation/sync completed; array tasks0-3 completed
+1000 epochs, tasks4-6 failed the CUDA check on ccc0390 (GPU requires reset).
+See `docs/results/qm9-batch2-retry-11917238/report.md`. No further jobs submitted.

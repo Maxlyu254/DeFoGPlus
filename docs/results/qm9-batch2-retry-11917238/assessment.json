@@ -1,0 +1,195 @@
+{
+  "audit": "passed",
+  "note": "Sampling repeats are averaged within a training seed; seed0 is exploratory.",
+  "completed_batch2_runs": 4,
+  "failed_before_training": [
+    "M0-seed2",
+    "M1-seed1",
+    "M1-seed2"
+  ],
+  "groups": {
+    "B0": {
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "validity": {
+        "mean_percent": 98.97222222222221,
+        "training_seed_sd_pp": 0.14803653202778533
+      },
+      "uniqueness": {
+        "mean_percent": 96.13025278395985,
+        "training_seed_sd_pp": 0.1261940397397018
+      },
+      "novelty": {
+        "mean_percent": 32.09377482805147,
+        "training_seed_sd_pp": 0.5337107516974886
+      },
+      "vun": {
+        "mean_percent": 30.535555555555554,
+        "training_seed_sd_pp": 0.5584237074453754
+      }
+    },
+    "A0": {
+      "seeds": [
+        0,
+        1
+      ],
+      "validity": {
+        "mean_percent": 99.065,
+        "training_seed_sd_pp": 0.3040559159102102
+      },
+      "uniqueness": {
+        "mean_percent": 96.19245429233952,
+        "training_seed_sd_pp": 0.16631411294514561
+      },
+      "novelty": {
+        "mean_percent": 30.694263029392808,
+        "training_seed_sd_pp": 0.17310633275944592
+      },
+      "vun": {
+        "mean_percent": 29.249999999999996,
+        "training_seed_sd_pp": 0.30641293851416823
+      }
+    },
+    "M0": {
+      "seeds": [
+        0,
+        1
+      ],
+      "validity": {
+        "mean_percent": 99.05666666666667,
+        "training_seed_sd_pp": 0.014142135623728137
+      },
+      "uniqueness": {
+        "mean_percent": 96.46665361848585,
+        "training_seed_sd_pp": 0.03858897086970642
+      },
+      "novelty": {
+        "mean_percent": 33.13064366264289,
+        "training_seed_sd_pp": 0.005739492510779921
+      },
+      "vun": {
+        "mean_percent": 31.65833333333333,
+        "training_seed_sd_pp": 0.011785113019775122
+      }
+    },
+    "M1": {
+      "seeds": [
+        0
+      ],
+      "validity": {
+        "mean_percent": 99.03333333333333,
+        "training_seed_sd_pp": null
+      },
+      "uniqueness": {
+        "mean_percent": 96.13598124267982,
+        "training_seed_sd_pp": null
+      },
+      "novelty": {
+        "mean_percent": 33.8141830724933,
+        "training_seed_sd_pp": null
+      },
+      "vun": {
+        "mean_percent": 32.193333333333335,
+        "training_seed_sd_pp": null
+      }
+    }
+  },
+  "paired_contrasts": {
+    "A0 minus B0": [
+      {
+        "seed": 0,
+        "validity_pp": 0.04000000000000625,
+        "uniqueness_pp": -0.04899532696795461,
+        "novelty_pp": -1.0843170564618205,
+        "vun_pp": -1.0333333333333314
+      },
+      {
+        "seed": 1,
+        "validity_pp": 0.27333333333334053,
+        "uniqueness_pp": 0.05052877143009482,
+        "novelty_pp": -1.8717089646286595,
+        "vun_pp": -1.686666666666671
+      }
+    ],
+    "M0 minus B0": [
+      {
+        "seed": 0,
+        "validity_pp": 0.23666666666666458,
+        "uniqueness_pp": 0.31551931326792726,
+        "novelty_pp": 1.4785266726237403,
+        "vun_pp": 1.5833333333333357
+      },
+      {
+        "seed": 1,
+        "validity_pp": 0.060000000000002274,
+        "uniqueness_pp": 0.23441278348686012,
+        "novelty_pp": 0.43820857278593905,
+        "vun_pp": 0.5133333333333319
+      }
+    ],
+    "M1 minus B0": [
+      {
+        "seed": 0,
+        "validity_pp": 0.22333333333332916,
+        "uniqueness_pp": 0.012133460442882438,
+        "novelty_pp": 2.1580076483992094,
+        "vun_pp": 2.1266666666666723
+      }
+    ]
+  },
+  "budget": {
+    "budget_gpu_hours": 50,
+    "reservation_gpu_hours": 49,
+    "consumed_gpu_hours": 25.739722222222223,
+    "current_attempt_gpu_hours": 25.683055555555555,
+    "previous_attempt_charge_gpu_hours": 0.05666666666666667,
+    "previous_batch_charge_gpu_hours": 0,
+    "jobs": [
+      {
+        "job_id": "11926299",
+        "state": "COMPLETED",
+        "seconds": 23574,
+        "allocated_gpu_hours": 6.548333333333333
+      },
+      {
+        "job_id": "11926384",
+        "state": "COMPLETED",
+        "seconds": 23404,
+        "allocated_gpu_hours": 6.501111111111111
+      },
+      {
+        "job_id": "11934084",
+        "state": "COMPLETED",
+        "seconds": 22068,
+        "allocated_gpu_hours": 6.13
+      },
+      {
+        "job_id": "11935991",
+        "state": "COMPLETED",
+        "seconds": 23358,
+        "allocated_gpu_hours": 6.488333333333333
+      },
+      {
+        "job_id": "11938916",
+        "state": "FAILED",
+        "seconds": 22,
+        "allocated_gpu_hours": 0.006111111111111111
+      },
+      {
+        "job_id": "11938932",
+        "state": "FAILED",
+        "seconds": 17,
+        "allocated_gpu_hours": 0.004722222222222222
+      },
+      {
+        "job_id": "11917238",
+        "state": "FAILED",
+        "seconds": 16,
+        "allocated_gpu_hours": 0.0044444444444444444
+      }
+    ]
+  }
+}
