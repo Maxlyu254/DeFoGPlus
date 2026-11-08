@@ -14,6 +14,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts'))
 import gpu_retry
 import batch2_cluster
+from finalize_batch import summary as batch_summary
 
 
 class RetryTest(unittest.TestCase):
@@ -129,6 +130,64 @@ class RetryTest(unittest.TestCase):
             ledger=batch2_cluster.accounting(self.root,self.plan)
         self.assertAlmostEqual(ledger['consumed_gpu_hours'],.12)
         self.assertEqual(len(ledger['jobs']),2)
+
+    def test_notification_dependency_follows_replacement_controller(self):
+        self.plan['jobs']['notify']='150'
+        self.assertTrue(self.reconcile())
+        hold=['scontrol','hold','150']
+        update=['scontrol','update','JobId=150','Dependency=afterany:201']
+        release=['scontrol','release','150']
+        self.assertLess(self.calls.index(hold),next(i for i,a in enumerate(self.calls) if a[0]=='sbatch'))
+        self.assertLess(self.calls.index(update),self.calls.index(release))
+        gpu=[a for a in self.calls if a[0]=='sbatch'][0]
+        self.assertIn('--mail-type=NONE',gpu)
+
+    def test_notification_stays_held_if_dependency_update_is_interrupted(self):
+        self.plan['jobs']['notify']='150'
+        def failed_update(args):
+            if args[:2]==['scontrol','update']:
+                raise RuntimeError('Connection interrupted')
+            return self.runner(args)
+        with self.assertRaises(RuntimeError):
+            gpu_retry.reconcile(self.root,self.plan,failed_update)
+        self.assertIn('retry_intent',self.plan)
+        self.assertNotIn(['scontrol','release','150'],self.calls)
+
+    def test_initial_mail_job_is_single_barrier_after_sync(self):
+        root=self.root/'batch'
+        root.mkdir()
+        plan=dict(self.plan,jobs={},mail_user='xinyan14@illinois.edu')
+        calls=[]
+        def scheduler(args):
+            calls.append(args)
+            return str(400+sum(a[0]=='sbatch' for a in calls)) if args[0]=='sbatch' else ''
+        with patch.object(batch2_cluster,'command',scheduler), \
+                patch.object(batch2_cluster,'accounting',return_value={}), \
+                patch.object(Path,'is_file',return_value=True),contextlib.redirect_stdout(io.StringIO()):
+            batch2_cluster.submit(types.SimpleNamespace(submit=True),root,plan)
+        jobs=[a for a in calls if a[0]=='sbatch']
+        self.assertEqual(len(jobs),4)
+        self.assertIn('--hold',jobs[2])
+        self.assertIn('--dependency=afterany:403',jobs[3])
+        self.assertIn('--mail-user=xinyan14@illinois.edu',jobs[3])
+        self.assertIn('--mail-type=END,FAIL',jobs[3])
+        self.assertNotIn('--mail-type=END,FAIL',jobs[0])
+        self.assertEqual(calls[-2:],[['scontrol','release','403'],['scontrol','release','404']])
+
+    def test_final_summary_separates_run_success_and_controller_failure(self):
+        self.plan.update(target_epochs=1000,git_commit='test')
+        for task in self.plan['tasks']:
+            path=self.root/'runs'/f"{task['configuration']}-seed1"/'metrics/summary.json'
+            path.parent.mkdir(parents=True,exist_ok=True)
+            path.write_text(json.dumps(dict(status='completed',completed_epochs=1000)))
+        result=batch_summary(self.root,self.plan,'COMPLETED')
+        self.assertEqual(result['status'],'COMPLETE')
+        self.assertEqual(len(result['completed']),3)
+        self.assertEqual(batch_summary(self.root,self.plan,'FAILED')['status'],'INCOMPLETE')
+        path.unlink()
+        result=batch_summary(self.root,self.plan,'COMPLETED')
+        self.assertEqual(result['status'],'INCOMPLETE')
+        self.assertEqual(result['incomplete'],['M1-seed1'])
 
 
 class CudaMarkerTest(unittest.TestCase):

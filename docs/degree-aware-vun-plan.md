@@ -24,6 +24,12 @@ precheck, exclude failed hosts, preserve completed runs, and charge all attempts
 against the batch ceiling. Training errors are not retried. Historical immutable
 batches are not changed. No new jobs submitted by this implementation turn.
 
+Batch-level email notifications implemented at the user's request. Confirmed
+recipient: xinyan14@illinois.edu. One final CPU notification follows the latest
+retry controller and reports COMPLETE/INCOMPLETE with completed-run counts;
+details in `docs/batch-email-notifications.md`. This will apply to new launches;
+no existing jobs were changed and no test email or job was submitted.
+
 Investigate how graph structural information in the initial distribution and
 conditioning affects molecular validity (V), uniqueness (U), novelty (N), and
 their combined yield (VUN). Measure both final results and learning curves.

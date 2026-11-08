@@ -62,6 +62,7 @@ def stage(args):
                 excluded_nodes=args.exclude_nodes,
                 previous_attempt_charge_gpu_hours=previous_charge, jobs={})
     plan['max_gpu_retries'] = args.max_gpu_retries
+    plan['mail_user'] = args.mail_user
     write_json(root/"launch.json", plan)
     print(json.dumps(plan, indent=2))
 
@@ -108,7 +109,7 @@ def submit(args, root, plan):
         return
     if not Path(PYTHON).is_file() or not (Path.home()/".config/defog/wandb-env.sh").is_file():
         raise RuntimeError("Existing environment or private W&B file unavailable")
-    common = ["sbatch", "--parsable", "--export=ALL,BATCH1_ROOT="+str(root),
+    common = ["sbatch", "--parsable", "--mail-type=NONE", "--export=ALL,BATCH1_ROOT="+str(root),
               "--output="+str(root/"logs/%x-%A_%a.out")]
     def job(key, extra, script):
         jobid = command(common+extra+[str(root/"source/scripts/slurm"/script)]).split(";")[0]
@@ -122,8 +123,17 @@ def submit(args, root, plan):
     if plan.get("excluded_nodes"):
         gpu_options.append("--exclude="+plan["excluded_nodes"])
     gpu = job("array", gpu_options, "batch1-a100.sbatch")
-    job("sync", ["--job-name=defog-batch2-sync", "--dependency=afterany:"+gpu,
-                 "--kill-on-invalid-dep=yes"], "batch1-sync.sbatch")
+    sync_options = ["--job-name=defog-batch2-sync", "--dependency=afterany:"+gpu,
+                    "--kill-on-invalid-dep=yes"]
+    if plan.get('mail_user'):
+        sync_options.append('--hold')
+    sync = job("sync", sync_options, "batch1-sync.sbatch")
+    if plan.get('mail_user'):
+        notify = job('notify', ['--job-name=defog-batch-finished', '--hold',
+                     '--dependency=afterany:'+sync, '--mail-type=END,FAIL',
+                     '--mail-user='+plan['mail_user']], 'batch-notify.sbatch')
+        command(['scontrol','release',sync])
+        command(['scontrol','release',notify])
     accounting(root, plan)
 
 
@@ -136,6 +146,8 @@ def main():
     p.add_argument("--exclude-nodes", default="ccc0388,ccc0390", help="Slurm node list to exclude from GPU tasks")
     p.add_argument("--max-gpu-retries", type=int, default=2,
                    help="Automatic reset-failure retries per task in a newly staged batch; 0 disables")
+    p.add_argument('--mail-user', default='xinyan14@illinois.edu',
+                   help='Final batch notification recipient; empty string disables')
     args = p.parse_args()
     if args.max_gpu_retries < 0 or args.max_gpu_retries > 2:
         p.error('GPU retry count must be between 0 and 2')

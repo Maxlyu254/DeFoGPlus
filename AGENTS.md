@@ -11,6 +11,10 @@ GPU reset startup retries are implemented for new batch2-style launches; read
 `docs/gpu-health-retries.md`. Two replacements/task maximum, exact health marker
 and Slurm checks, accumulated node exclusions and all-attempt budget enforcement.
 No historical jobs were modified or new jobs submitted during implementation.
+Batch email recipient confirmed: xinyan14@illinois.edu. New batch2-style launches
+use a single final CPU notification after sync and all retry waves. Read
+`docs/batch-email-notifications.md`; keep per-task/intermediate mail disabled.
+No delivery test or job was submitted during notification implementation.
 
 Read `docs/degree-aware-vun-plan.md` before implementing molecular prior changes,
 experiment runners, or evaluation. It records the user's research objective,

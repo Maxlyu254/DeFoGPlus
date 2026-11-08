@@ -113,7 +113,12 @@ def reconcile(root, plan, runner=command):
     # for reconciliation rather than submitting an untracked duplicate.
     plan['retry_intent'] = dict(tasks=retry, excluded_nodes=plan['excluded_nodes'])
     write_json(root/'launch.json', plan)
-    common = ['sbatch','--parsable','--export=ALL,BATCH1_ROOT='+str(root),
+    notify = plan.get('jobs',{}).get('notify')
+    if notify:
+        # Hold the single final notifier before extending the dependency chain.
+        # An interrupted submission leaves it held for explicit reconciliation.
+        runner(['scontrol','hold',notify])
+    common = ['sbatch','--parsable','--mail-type=NONE','--export=ALL,BATCH1_ROOT='+str(root),
               '--output='+str(root/'logs/%x-%A_%a.out')]
     scripts = root/'source/scripts/slurm'
     seconds = int(plan['gpu_task_hours']*3600)
@@ -130,6 +135,10 @@ def reconcile(root, plan, runner=command):
     if not sync.isdigit():
         raise RuntimeError('Unrecognized sync sbatch response; reconcile retry_intent')
     wave['sync'] = sync
+    write_json(root/'launch.json', plan)
+    if notify:
+        runner(['scontrol','update','JobId='+notify,'Dependency=afterany:'+sync])
+        runner(['scontrol','release',notify])
     del plan['retry_intent']
     write_json(root/'launch.json', plan)
     print(json.dumps(dict(retry_array=array, tasks=retry, sync=sync,

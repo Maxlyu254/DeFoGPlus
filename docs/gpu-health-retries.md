@@ -50,6 +50,9 @@ GPU allocations. Incomplete scheduler accounting also stops automatic actions.
 W&B sync waits until replacement waves finish or retries stop. Unresolved
 failures cause the final CPU controller to exit nonzero after syncing available
 results. There are no unconditional retry loops or automatic budget increases.
+One final Slurm email notification now follows that controller across all waves;
+see `docs/batch-email-notifications.md`. Interrupted retry submissions can leave
+the notification held until job state is reconciled, to avoid premature mail.
 
 Slurm's afterany dependency runs after completion irrespective of success, and
 an array can select a sparse set of task indices. See the official
@@ -66,9 +69,10 @@ launch still requires the explicit `submit --submit` path and authorization.
 Once launched, the recorded policy authorizes bounded health retries within
 that batch's budget.
 
-Validation: 11 CPU tests exercise mixed success/failure selection, exclusions,
+Validation: 15 CPU tests exercise mixed success/failure selection, exclusions,
 active/completed replacement protection, retry caps, budget and prior charges,
 incomplete accounting, interrupted submission, stale markers, existing training
 artifacts, disabled policy, all-wave ledger totals, and the real CUDA marker
-script with a simulated torch module. Shell syntax checks pass. No live
+script with a simulated torch module, plus notification dependencies and final
+run counts. Shell syntax checks pass. No live
 failure/retry cycle was induced and no GPU resources were requested for testing.
