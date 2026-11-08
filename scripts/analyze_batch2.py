@@ -127,7 +127,7 @@ def plots(finals, curves, output):
                 ax.plot([r['epoch'] for r in sub], [r[metric] for r in sub],
                         color=colors[variant],linestyle=style,marker='.',label=label)
     axes[0,0].set(title='Early validity (2k attempts)',ylabel='Strict validity (%)',ylim=(0,102))
-    axes[0,1].set(title='Late validity (seed0: 2k; new seeds: 10k)',ylabel='Strict validity (%)',ylim=(97.5,99.6))
+    axes[0,1].set(title='Late validity (seed0: 2k; new seeds: 10k)',ylabel='Strict validity (%)',ylim=(97.5,100))
     axes[1,0].set(title='Matched 2k VUN through training',ylabel='VUN (%)')
     axes[1,0].set_xscale('symlog',linthresh=1)
     for i,v in enumerate(colors):
