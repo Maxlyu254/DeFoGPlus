@@ -4,6 +4,26 @@ Recorded: 2026-10-25. Source: the user's discussion and requested evaluation pla
 
 ## Objective and current status
 
+Standing budget instruction (2026-11-08): assume 50 A100 GPU-hours for each new
+experiment batch unless the user explicitly changes it. Historical charges
+remain recorded. The proposed full QM9 matrix completion and deferred studies
+are reconciled in `docs/qm9-matrix-completion-plan.md`: 10 completed cells,
+17 missing for the nine-model/three-seed reference matrix. This is planning,
+not authorization to implement or submit further experiments.
+
+Latest ordering revision: put B1 seed2 in the immediate next batch (eight full
+runs total); the user explicitly permits this batch to exceed 50 hours using
+the previous batch's unused allowance. Require A100 profiling of D0/D1/A2
+before any full training of those variants. See the updated matrix completion
+plan. This is a batch-specific budget exception; later batches default to 50.
+
+Automatic GPU-reset startup retries implemented at the user's request:
+`docs/gpu-health-retries.md`. Newly staged batch2-style jobs permit at most two
+replacements per task, require explicit reset evidence and a failed CUDA
+precheck, exclude failed hosts, preserve completed runs, and charge all attempts
+against the batch ceiling. Training errors are not retried. Historical immutable
+batches are not changed. No new jobs submitted by this implementation turn.
+
 Investigate how graph structural information in the initial distribution and
 conditioning affects molecular validity (V), uniqueness (U), novelty (N), and
 their combined yield (VUN). Measure both final results and learning curves.

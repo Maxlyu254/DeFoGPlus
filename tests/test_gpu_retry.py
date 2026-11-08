@@ -1,0 +1,158 @@
+"""Controller tests with simulated scheduler responses; never submit real jobs."""
+import contextlib
+import io
+import json
+import os
+from pathlib import Path
+import runpy
+import sys
+import tempfile
+import types
+import unittest
+from unittest.mock import patch
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts'))
+import gpu_retry
+import batch2_cluster
+
+
+class RetryTest(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.plan = dict(jobs={'array':'100'}, tasks=[
+            dict(array_task=i, configuration=v, seed=1) for i,v in enumerate(['B0','M0','M1'])],
+            max_gpu_retries=2, excluded_nodes='ccc0388,ccc0390',
+            gpu_task_hours=7, budget_gpu_hours=50, reservation_gpu_hours=21)
+        self.rows = {'100': ['100_0|COMPLETED|0:0|21600|gres/gpu=1|ccc0389',
+                             '100_1|FAILED|86:0|20|gres/gpu=1|ccc0391',
+                             '100_2|FAILED|1:0|200|gres/gpu=1|ccc0387']}
+        self.calls = []
+        self.marker('100',1,'ccc0391')
+
+    def marker(self, array, index, node):
+        task=self.plan['tasks'][index]
+        path=self.root/'runs'/f"{task['configuration']}-seed1"/'logs'/f'gpu-health-{array}_{index}.json'
+        path.parent.mkdir(parents=True,exist_ok=True)
+        path.write_text(json.dumps(dict(reason='gpu_reset_required',phase='cuda_precheck',
+            array_job_id=array,array_task_id=str(index),hostname=node)))
+        return path
+
+    def runner(self, args):
+        self.calls.append(args)
+        if args[0]=='sacct':
+            return '\n'.join(self.rows[args[args.index('-j')+1]])
+        return '200' if any(s.startswith('--array=') for s in args) else '201'
+
+    def reconcile(self):
+        with contextlib.redirect_stdout(io.StringIO()):
+            return gpu_retry.reconcile(self.root,self.plan,self.runner)
+
+    def test_only_reset_startup_task_retried_and_excluded(self):
+        self.assertTrue(self.reconcile())
+        submissions=[a for a in self.calls if a[0]=='sbatch']
+        self.assertEqual(len(submissions),2)
+        self.assertIn('--array=1',submissions[0])
+        self.assertIn('--exclude=ccc0388,ccc0390,ccc0391',submissions[0])
+        self.assertIn('--dependency=afterany:200',submissions[1])
+        self.assertEqual(self.plan['retry_stopped'], {'2':'not_a_reset_startup_failure'})
+        self.assertNotIn('retry_intent',self.plan)
+
+    def test_active_replacement_not_duplicated(self):
+        self.reconcile()
+        self.calls=[]
+        self.rows['200']=['200_1|RUNNING|0:0|20|gres/gpu=1|ccc0392']
+        self.assertTrue(self.reconcile())
+        self.assertFalse(any(a[0]=='sbatch' for a in self.calls))
+
+    def test_completed_replacement_never_restarted(self):
+        self.reconcile()
+        self.calls=[]
+        self.rows['200']=['200_1|COMPLETED|0:0|21600|gres/gpu=1|ccc0392']
+        self.assertFalse(self.reconcile())
+        self.assertFalse(any(a[0]=='sbatch' for a in self.calls))
+
+    def test_prior_hours_and_full_reservation_enforce_budget(self):
+        self.plan['budget_gpu_hours']=10
+        self.plan['previous_attempt_charge_gpu_hours']=1
+        self.assertFalse(self.reconcile())
+        self.assertEqual(self.plan['retry_stopped']['1'],'budget_limit')
+        self.assertFalse(any(a[0]=='sbatch' for a in self.calls))
+
+    def test_two_retries_then_stop(self):
+        self.plan['retry_waves']=[dict(array='200',tasks=[1],sync='201'),
+                                  dict(array='300',tasks=[1],sync='301')]
+        self.rows['200']=['200_1|FAILED|86:0|20|gres/gpu=1|ccc0392']
+        self.rows['300']=['300_1|FAILED|86:0|20|gres/gpu=1|ccc0393']
+        self.marker('300',1,'ccc0393')
+        self.assertFalse(self.reconcile())
+        self.assertEqual(self.plan['retry_stopped']['1'],'retry_limit')
+        self.assertFalse(any(a[0]=='sbatch' for a in self.calls))
+
+    def test_incomplete_accounting_stops_submission(self):
+        self.rows['100']=self.rows['100'][:1]
+        with self.assertRaisesRegex(RuntimeError,'Accounting incomplete'):
+            self.reconcile()
+        self.assertFalse(any(a[0]=='sbatch' for a in self.calls))
+
+    def test_unknown_submission_outcome_stops_duplicate(self):
+        def broken(args):
+            if args[0]=='sbatch':
+                raise RuntimeError('Connection interrupted after submission')
+            return self.runner(args)
+        with self.assertRaises(RuntimeError):
+            gpu_retry.reconcile(self.root,self.plan,broken)
+        self.assertIn('retry_intent',json.loads((self.root/'launch.json').read_text()))
+        with self.assertRaisesRegex(RuntimeError,'interrupted retry submission'):
+            self.reconcile()
+
+    def test_stale_marker_and_training_artifacts_disqualify(self):
+        path=self.marker('100',1,'wrongnode')
+        self.assertFalse(self.reconcile())
+        self.marker('100',1,'ccc0391')
+        (path.parent.parent/'manifest.json').write_text('{}')
+        self.assertFalse(self.reconcile())
+
+    def test_disabled_policy_does_not_query_scheduler(self):
+        self.plan.pop('max_gpu_retries')
+        self.assertFalse(self.reconcile())
+        self.assertEqual(self.calls,[])
+
+    def test_ledger_carries_all_waves_and_prior_charge(self):
+        self.plan['retry_waves']=[dict(array='200',tasks=[1],sync='201')]
+        self.plan['previous_attempt_charge_gpu_hours']=.1
+        def accounting(args):
+            array=args[args.index('-j')+1]
+            return (array+'|FAILED|36|gres/gpu=1')
+        with patch.object(batch2_cluster,'command',accounting):
+            ledger=batch2_cluster.accounting(self.root,self.plan)
+        self.assertAlmostEqual(ledger['consumed_gpu_hours'],.12)
+        self.assertEqual(len(ledger['jobs']),2)
+
+
+class CudaMarkerTest(unittest.TestCase):
+    def test_reset_failure_marker_and_unclassified_failure(self):
+        # Execute the real startup script with a CPU-only fake torch module.
+        fake=types.SimpleNamespace(__version__='test',version=types.SimpleNamespace(cuda='test'),
+            cuda=types.SimpleNamespace(is_available=lambda:False))
+        script=Path(__file__).resolve().parents[1]/'scripts/check_cuda.py'
+        with tempfile.TemporaryDirectory() as d:
+            health,marker=Path(d)/'gpu.txt',Path(d)/'marker.json'
+            env=dict(BATCH1_GPU_HEALTH_LOG=str(health),BATCH1_GPU_FAILURE_MARKER=str(marker),
+                     SLURM_ARRAY_JOB_ID='100',SLURM_ARRAY_TASK_ID='1',SLURM_JOB_ID='101')
+            with patch.dict(sys.modules,torch=fake),patch.dict(os.environ,env),contextlib.redirect_stdout(io.StringIO()):
+                health.write_text('GPU Recovery Action : Reset\n')
+                with self.assertRaises(SystemExit) as error:
+                    runpy.run_path(str(script))
+                self.assertEqual(error.exception.code,86)
+                self.assertEqual(json.loads(marker.read_text())['reason'],'gpu_reset_required')
+                marker.unlink()
+                health.write_text('GPU Recovery Action : None\n')
+                with self.assertRaises(RuntimeError):
+                    runpy.run_path(str(script))
+                self.assertFalse(marker.exists())
+
+
+if __name__=='__main__':
+    unittest.main()

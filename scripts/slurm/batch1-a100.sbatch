@@ -36,7 +36,10 @@ export MPLBACKEND=Agg WANDB_MODE=offline PYTHONUNBUFFERED=1
 export PYTHONPATH="$BATCH1_SOURCE:$BATCH1_SOURCE/src"
 export BATCH1_JOB_START_UNIX
 BATCH1_JOB_START_UNIX=$(date +%s)
-nvidia-smi -q > "$run_root/logs/gpu-${SLURM_JOB_ID}.txt"
+export BATCH1_GPU_HEALTH_LOG="$run_root/logs/gpu-${SLURM_JOB_ID}.txt"
+export BATCH1_GPU_FAILURE_MARKER="$run_root/logs/gpu-health-${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}.json"
+# Even if nvidia-smi fails, let the CUDA check provide the allocation diagnosis.
+nvidia-smi -q > "$BATCH1_GPU_HEALTH_LOG" 2>&1 || true
 nvidia-smi --query-gpu=timestamp,name,utilization.gpu,memory.used,memory.total,power.draw \
     --format=csv -l 10 > "$run_root/logs/gpu-monitor-${SLURM_JOB_ID}.csv" &
 monitor_pid=$!

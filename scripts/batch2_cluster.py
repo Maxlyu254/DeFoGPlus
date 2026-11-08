@@ -2,6 +2,7 @@
 """Fixed-1000 batch 2: seven simultaneously eligible A100 tasks, fresh budget."""
 import argparse
 import datetime
+import fcntl
 import json
 from pathlib import Path
 import re
@@ -10,6 +11,7 @@ import subprocess
 import tarfile
 
 from batch1_cluster import command, write_json, PYTHON, DATA
+from gpu_retry import reconcile, waves
 
 ROOT = Path(__file__).resolve().parents[1]
 TASKS = [("B0", 1), ("B0", 2), ("A0", 1), ("M0", 1), ("M0", 2), ("M1", 1), ("M1", 2)]
@@ -59,14 +61,15 @@ def stage(args):
                 previous_batch_charge_gpu_hours=0, retry_of=retry_of,
                 excluded_nodes=args.exclude_nodes,
                 previous_attempt_charge_gpu_hours=previous_charge, jobs={})
+    plan['max_gpu_retries'] = args.max_gpu_retries
     write_json(root/"launch.json", plan)
     print(json.dumps(plan, indent=2))
 
 
 def accounting(root, plan):
     records = []
-    if plan["jobs"].get("array"):
-        raw = command(["sacct", "-X", "-n", "-P", "-j", plan["jobs"]["array"],
+    for wave in waves(plan):
+        raw = command(["sacct", "-X", "-n", "-P", "-j", wave['array'],
                        "--format=JobIDRaw,State,ElapsedRaw,AllocTRES"])
         for line in raw.splitlines():
             f = line.split("|")
@@ -77,7 +80,7 @@ def accounting(root, plan):
                                 allocated_gpu_hours=int(f[2])*(int(gpu.group(1)) if gpu else 0)/3600))
     attempt_hours = sum(r["allocated_gpu_hours"] for r in records)
     prior_hours = plan.get("previous_attempt_charge_gpu_hours", 0)
-    ledger = dict(budget_gpu_hours=50, reservation_gpu_hours=49,
+    ledger = dict(budget_gpu_hours=plan['budget_gpu_hours'], reservation_gpu_hours=plan['reservation_gpu_hours'],
                   consumed_gpu_hours=prior_hours+attempt_hours,
                   current_attempt_gpu_hours=attempt_hours,
                   previous_attempt_charge_gpu_hours=prior_hours,
@@ -130,8 +133,12 @@ def main():
     p.add_argument("--batch-root", required=True)
     p.add_argument("--submit", action="store_true")
     p.add_argument("--retry-of", help="Stage a replacement for a fully failed batch root")
-    p.add_argument("--exclude-nodes", default="", help="Slurm node list to exclude from GPU tasks")
+    p.add_argument("--exclude-nodes", default="ccc0388,ccc0390", help="Slurm node list to exclude from GPU tasks")
+    p.add_argument("--max-gpu-retries", type=int, default=2,
+                   help="Automatic reset-failure retries per task in a newly staged batch; 0 disables")
     args = p.parse_args()
+    if args.max_gpu_retries < 0 or args.max_gpu_retries > 2:
+        p.error('GPU retry count must be between 0 and 2')
     if args.mode == "stage":
         stage(args)
         return
@@ -140,13 +147,26 @@ def main():
     if args.mode == "submit":
         submit(args, root, plan)
     elif args.mode == "sync":
-        for session in sorted((root/"runs").glob("*/wandb/offline-run-*")):
-            subprocess.run([PYTHON,"-m","wandb","sync",str(session)], check=True)
-        print(json.dumps(accounting(root, plan), indent=2))
+        # The CPU afterany job is the sole controller. Lock and reread prevent
+        # duplicate submissions from concurrent/manual controller invocations.
+        with (root/'retry.lock').open('a') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            plan = json.loads((root/'launch.json').read_text())
+            pending = reconcile(root, plan)
+            print(json.dumps(accounting(root, plan), indent=2))
+            if pending:
+                return
+            for session in sorted((root/"runs").glob("*/wandb/offline-run-*")):
+                subprocess.run([PYTHON,"-m","wandb","sync",str(session)], check=True)
+            if plan.get('retry_stopped'):
+                raise RuntimeError('Batch has unresolved failures; see retry_stopped in launch.json')
     else:
         print(json.dumps(accounting(root, plan), indent=2))
         if plan["jobs"]:
-            subprocess.run(["squeue","-j",",".join(plan["jobs"].values()),
+            ids = list(plan['jobs'].values())
+            for wave in plan.get('retry_waves', []):
+                ids.extend([wave['array'],wave['sync']])
+            subprocess.run(["squeue","-j",",".join(i for i in ids if i),
                             "-o","%.20i %.28j %.10T %.12M %R"], check=True)
 
 

@@ -1,5 +1,17 @@
 # Project context for future sessions
 
+Standing user budget instruction (2026-11-08): assume 50 A100 GPU-hours per new
+experiment batch unless explicitly changed. See `docs/qm9-matrix-completion-plan.md`
+for proposed full QM9 matrix completion (17 missing runs), failed-run recovery,
+and deferred augmentations. Planning only; no new launch authorization.
+Latest plan revision: immediate next batch has eight runs including B1 seed2,
+with explicit user permission to exceed 50 hours (56 hours at seven hours/run).
+D0/D1/A2 require GPU profiling before full training. Other batches default to50.
+GPU reset startup retries are implemented for new batch2-style launches; read
+`docs/gpu-health-retries.md`. Two replacements/task maximum, exact health marker
+and Slurm checks, accumulated node exclusions and all-attempt budget enforcement.
+No historical jobs were modified or new jobs submitted during implementation.
+
 Read `docs/degree-aware-vun-plan.md` before implementing molecular prior changes,
 experiment runners, or evaluation. It records the user's research objective,
 agreed experiment matrix, proposed protocols, and implementation caveats from
