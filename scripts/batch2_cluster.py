@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TASKS = [("B0", 1), ("B0", 2), ("A0", 1), ("M0", 1), ("M0", 2), ("M1", 1), ("M1", 2)]
 
 
-def stage(args):
+def stage(args, tasks=TASKS, batch_name='batch2', budget_hours=50):
     if command(["git", "-C", str(ROOT), "status", "--porcelain"]):
         raise RuntimeError("Stage only a clean committed checkout")
     root = Path(args.batch_root).resolve()
@@ -27,9 +27,9 @@ def stage(args):
         previous = Path(retry_of)
         previous_plan = json.loads((previous/"launch.json").read_text())
         previous_ledger = accounting(previous, previous_plan)
-        if len(previous_ledger["jobs"]) != len(TASKS) or any(
+        if len(previous_ledger["jobs"]) != len(previous_plan['tasks']) or any(
                 r["state"] != "FAILED" for r in previous_ledger["jobs"]):
-            raise RuntimeError("Retry requires all seven previous tasks to be FAILED")
+            raise RuntimeError("Retry requires all previous tasks to be FAILED")
         if list((previous/"runs").glob("*/metrics/summary.json")):
             raise RuntimeError("Previous results exist; reconcile before retry")
         previous_charge = previous_ledger["consumed_gpu_hours"]
@@ -45,19 +45,19 @@ def stage(args):
     (source/"SOURCE_COMMIT").write_text(commit+"\n")
     for name in ["logs", "runs"]:
         (root/name).mkdir()
-    (root/"tasks.tsv").write_text("".join(f"{variant}\t{seed}\n" for variant, seed in TASKS))
+    (root/"tasks.tsv").write_text("".join(f"{variant}\t{seed}\n" for variant, seed in tasks))
     settings = dict(BATCH1_ROOT=str(root), BATCH1_SOURCE=str(source), BATCH1_PYTHON=PYTHON,
                     BATCH1_DATA=DATA,
                     BATCH1_CACHE="/scratch/xinyan14/motiflow-experiments/qm9-batch1/prior-cache",
-                    BATCH1_ARCHIVE="/u/xinyan14/motiflow-artifacts/qm9-batch2/"+root.name,
-                    BATCH1_PROTOCOL="batch2", BATCH1_TASK_FILE=str(root/"tasks.tsv"),
-                    BATCH1_MANAGER=str(source/"scripts/batch2_cluster.py"))
+                    BATCH1_ARCHIVE="/u/xinyan14/motiflow-artifacts/qm9-"+batch_name+"/"+root.name,
+                    BATCH1_PROTOCOL=batch_name, BATCH1_TASK_FILE=str(root/"tasks.tsv"),
+                    BATCH1_MANAGER=str(source/("scripts/"+batch_name+"_cluster.py")))
     (root/"environment.sh").write_text("".join("export "+k+"="+shlex.quote(v)+"\n" for k,v in settings.items()))
-    plan = dict(schema=1, protocol="batch2", git_commit=commit, settings=settings,
+    plan = dict(schema=1, protocol=batch_name, git_commit=commit, settings=settings,
                 created_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                tasks=[dict(array_task=i, configuration=v, seed=s) for i,(v,s) in enumerate(TASKS)],
-                target_epochs=1000, array_expression="0-6", concurrency_cap=None,
-                gpu_task_hours=7, reservation_gpu_hours=49, budget_gpu_hours=50,
+                tasks=[dict(array_task=i, configuration=v, seed=s) for i,(v,s) in enumerate(tasks)],
+                target_epochs=1000, array_expression=f"0-{len(tasks)-1}", concurrency_cap=None,
+                gpu_task_hours=7, reservation_gpu_hours=7*len(tasks), budget_gpu_hours=budget_hours,
                 previous_batch_charge_gpu_hours=0, retry_of=retry_of,
                 excluded_nodes=args.exclude_nodes,
                 previous_attempt_charge_gpu_hours=previous_charge, jobs={})
@@ -98,14 +98,14 @@ def submit(args, root, plan):
             if str(other.parent.resolve()) == plan.get("retry_of"):
                 previous_plan = json.loads(other.read_text())
                 previous_ledger = accounting(other.parent, previous_plan)
-                if len(previous_ledger["jobs"]) == len(TASKS) and all(
+                if len(previous_ledger["jobs"]) == len(previous_plan['tasks']) and all(
                         r["state"] == "FAILED" for r in previous_ledger["jobs"]):
                     if not list((other.parent/"runs").glob("*/metrics/summary.json")):
                         continue
-            raise RuntimeError("Another batch-2 submission exists; reconcile before submitting")
+            raise RuntimeError("Another submission exists in this batch family; reconcile before submitting")
     assert plan["reservation_gpu_hours"] + plan.get("previous_attempt_charge_gpu_hours", 0) <= plan["budget_gpu_hours"]
     if not args.submit:
-        print("Dry run: CPU checks -> seven A100 tasks (0-6, no throttle, 7h/task) -> W&B sync. No submission.")
+        print(f"Dry run: CPU checks -> {len(plan['tasks'])} A100 tasks -> W&B sync and final email. No submission.")
         return
     if not Path(PYTHON).is_file() or not (Path.home()/".config/defog/wandb-env.sh").is_file():
         raise RuntimeError("Existing environment or private W&B file unavailable")
@@ -117,13 +117,15 @@ def submit(args, root, plan):
         write_json(root/"launch.json", plan)
         print(key+": "+jobid, flush=True)
         return jobid
-    cpu = job("prepare", ["--job-name=defog-batch2-prepare"], "batch1-prepare.sbatch")
-    gpu_options = ["--job-name=defog-batch2", "--time=07:00:00", "--array=0-6",
+    label = 'defog-'+plan.get('protocol','batch2')
+    cpu = job("prepare", ["--job-name="+label+"-prepare"], "batch1-prepare.sbatch")
+    gpu_options = ["--job-name="+label, "--time="+str(int(plan['gpu_task_hours']*60)),
+                   "--array="+plan.get('array_expression',f"0-{len(plan['tasks'])-1}"),
                    "--dependency=afterok:"+cpu, "--kill-on-invalid-dep=yes"]
     if plan.get("excluded_nodes"):
         gpu_options.append("--exclude="+plan["excluded_nodes"])
     gpu = job("array", gpu_options, "batch1-a100.sbatch")
-    sync_options = ["--job-name=defog-batch2-sync", "--dependency=afterany:"+gpu,
+    sync_options = ["--job-name="+label+"-sync", "--dependency=afterany:"+gpu,
                     "--kill-on-invalid-dep=yes"]
     if plan.get('mail_user'):
         sync_options.append('--hold')
@@ -137,7 +139,7 @@ def submit(args, root, plan):
     accounting(root, plan)
 
 
-def main():
+def main(tasks=TASKS, batch_name='batch2', budget_hours=50):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("mode", choices=["stage", "submit", "status", "sync"])
     p.add_argument("--batch-root", required=True)
@@ -152,7 +154,7 @@ def main():
     if args.max_gpu_retries < 0 or args.max_gpu_retries > 2:
         p.error('GPU retry count must be between 0 and 2')
     if args.mode == "stage":
-        stage(args)
+        stage(args, tasks=tasks, batch_name=batch_name, budget_hours=budget_hours)
         return
     root = Path(args.batch_root).resolve()
     plan = json.loads((root/"launch.json").read_text())

@@ -167,7 +167,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=["prepare", "preflight", "train"])
     parser.add_argument("--configuration", choices=CONFIGURATIONS, default="B0")
-    parser.add_argument("--protocol", choices=["batch1", "batch2"], default="batch1")
+    parser.add_argument("--protocol", choices=["batch1", "batch2", "batch3"], default="batch1")
     parser.add_argument("--data-dir", required=True)
     parser.add_argument("--cache-dir", required=True)
     parser.add_argument("--run-dir")
@@ -203,7 +203,7 @@ def main():
             second = train(args, variant, root, resume="latest")
             assert second["status"] == "completed" and second["completed_epochs"] == 2
             assert len(second["final_results"]) >= 1
-            if args.protocol == "batch2":
+            if args.protocol in ["batch2", "batch3"]:
                 assert set(second["checkpoint_roles"]) == {"final"}
                 assert second["best_epoch"] is None
             index = json.loads((root/"checkpoint-index.json").read_text())
@@ -213,7 +213,7 @@ def main():
             assert "rng" in checkpoint["batch1"]
             curves = [json.loads(line) for line in (root/"metrics"/"curve.jsonl").read_text().splitlines()]
             assert [row["completed_epoch"] for row in curves] == [0, 1, 2]
-            if args.protocol == "batch2":
+            if args.protocol in ["batch2", "batch3"]:
                 assert all(row["attempts"] == 6 and row["comparison_attempts"] == 4
                            for row in curves[1:])
             if variant in ["A0", "A1"]:

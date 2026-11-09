@@ -1,0 +1,8 @@
+defaults:
+  - batch2
+  - _self_
+
+general:
+  name: batch3
+batch1:
+  wandb_project: defog-qm9-batch3

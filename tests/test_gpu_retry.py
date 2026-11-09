@@ -7,6 +7,7 @@ from pathlib import Path
 import runpy
 import sys
 import tempfile
+import tarfile
 import types
 import unittest
 from unittest.mock import patch
@@ -14,6 +15,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts'))
 import gpu_retry
 import batch2_cluster
+from batch3_cluster import TASKS as BATCH3_TASKS
 from finalize_batch import summary as batch_summary
 
 
@@ -188,6 +190,38 @@ class RetryTest(unittest.TestCase):
         result=batch_summary(self.root,self.plan,'COMPLETED')
         self.assertEqual(result['status'],'INCOMPLETE')
         self.assertEqual(result['incomplete'],['M1-seed1'])
+
+    def test_eight_run_staging_and_submission(self):
+        root=self.root/'batch3'
+        args=types.SimpleNamespace(batch_root=str(root),retry_of=None,
+            exclude_nodes='ccc0388,ccc0390',max_gpu_retries=2,mail_user='xinyan14@illinois.edu')
+        def git(args):
+            return 'a'*40 if 'rev-parse' in args else ''
+        def archive(args,**kwargs):
+            with tarfile.open(args[args.index('-o')+1],'w'):
+                pass
+        with patch.object(batch2_cluster,'command',git), \
+                patch.object(batch2_cluster.subprocess,'run',archive),contextlib.redirect_stdout(io.StringIO()):
+            batch2_cluster.stage(args,tasks=BATCH3_TASKS,batch_name='batch3',budget_hours=56)
+        plan=json.loads((root/'launch.json').read_text())
+        self.assertEqual(plan['budget_gpu_hours'],56)
+        self.assertEqual(plan['reservation_gpu_hours'],56)
+        self.assertEqual(plan['array_expression'],'0-7')
+        self.assertEqual(plan['settings']['BATCH1_PROTOCOL'],'batch3')
+        self.assertTrue(plan['settings']['BATCH1_MANAGER'].endswith('scripts/batch3_cluster.py'))
+        self.assertEqual([(t['configuration'],t['seed']) for t in plan['tasks']],BATCH3_TASKS)
+        calls=[]
+        def scheduler(args):
+            calls.append(args)
+            return str(500+sum(a[0]=='sbatch' for a in calls)) if args[0]=='sbatch' else ''
+        with patch.object(batch2_cluster,'command',scheduler), \
+                patch.object(batch2_cluster,'accounting',return_value={}), \
+                patch.object(Path,'is_file',return_value=True),contextlib.redirect_stdout(io.StringIO()):
+            batch2_cluster.submit(types.SimpleNamespace(submit=True),root,plan)
+        gpu=[a for a in calls if a[0]=='sbatch'][1]
+        self.assertIn('--array=0-7',gpu)
+        self.assertIn('--exclude=ccc0388,ccc0390',gpu)
+        self.assertIn('--time=420',gpu)
 
 
 class CudaMarkerTest(unittest.TestCase):

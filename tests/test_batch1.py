@@ -189,6 +189,23 @@ class Batch2ProtocolTest(unittest.TestCase):
         self.assertEqual(cfg.train, original.train)
         self.assertEqual(cfg.sample, original.sample)
 
+    def test_batch3_retains_batch2_scientific_protocol(self):
+        from types import SimpleNamespace
+        from experiments.batch1.run import make_config
+        args = SimpleNamespace(protocol='batch2',data_dir='/tmp/qm9',seed=2,
+                               smoke=False,wandb_mode=None)
+        prior = make_config(args,'A1')
+        args.protocol='batch3'
+        current = make_config(args,'A1')
+        self.assertEqual(current.model,prior.model)
+        self.assertEqual(current.train,prior.train)
+        self.assertEqual(current.sample,prior.sample)
+        self.assertEqual(current.augmentation,prior.augmentation)
+        before,after=dict(prior.batch1),dict(current.batch1)
+        self.assertEqual(after.pop('wandb_project'),'defog-qm9-batch3')
+        before.pop('wandb_project')
+        self.assertEqual(before,after)
+
 
 class OfflineTelemetryTest(unittest.TestCase):
     def test_scalar_session_stays_offline_and_records_local_rows(self):

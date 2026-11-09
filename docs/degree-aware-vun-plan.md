@@ -30,6 +30,11 @@ retry controller and reports COMPLETE/INCOMPLETE with completed-run counts;
 details in `docs/batch-email-notifications.md`. This will apply to new launches;
 no existing jobs were changed and no test email or job was submitted.
 
+User now authorizes submission of the eight planned runs with final email
+enabled. Current launch scope: `docs/qm9-batch3-launch.md` and
+`scripts/batch3_cluster.py`. Exactly 1000 epochs; explicit 56-hour exception;
+no throttle; GPU reset retries and email xinyan14@illinois.edu enabled.
+
 Investigate how graph structural information in the initial distribution and
 conditioning affects molecular validity (V), uniqueness (U), novelty (N), and
 their combined yield (VUN). Measure both final results and learning curves.
