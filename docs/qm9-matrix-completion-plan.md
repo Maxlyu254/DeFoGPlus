@@ -1,6 +1,10 @@
 # QM9 matrix completion proposal
 
-Updated 2026-11-08. Planning only: no new implementations or submissions.
+Updated 2026-11-08. The first batch is submitted; later experiments remain plans.
+Status update: the immediate eight-run batch below is now authorized and
+submitted as A100 array12262181. See `qm9-batch3-launch.md` and its submission
+record before checking or retrying. Profiling and later D0/D1/A2 runs remain
+proposals; they are not included in this submission.
 
 Standing user instruction: each new experiment batch has a 50-A100-GPU-hour
 budget unless the user explicitly changes it. This does not retrospectively

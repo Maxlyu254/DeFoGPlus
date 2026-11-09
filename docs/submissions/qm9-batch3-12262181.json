@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "protocol": "batch3",
+  "git_commit": "19e128846be285bb5ad0d8cd6cae4c4688634182",
+  "settings": {
+    "BATCH1_ROOT": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108",
+    "BATCH1_SOURCE": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108/source",
+    "BATCH1_PYTHON": "/scratch/xinyan14/motiflow-benchmarks/qm9-a100-20261026T041904Z/environment/bin/python",
+    "BATCH1_DATA": "/scratch/xinyan14/motiflow-benchmarks/data/qm9",
+    "BATCH1_CACHE": "/scratch/xinyan14/motiflow-experiments/qm9-batch1/prior-cache",
+    "BATCH1_ARCHIVE": "/u/xinyan14/motiflow-artifacts/qm9-batch3/batch3-matrix-20261108",
+    "BATCH1_PROTOCOL": "batch3",
+    "BATCH1_TASK_FILE": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108/tasks.tsv",
+    "BATCH1_MANAGER": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108/source/scripts/batch3_cluster.py"
+  },
+  "created_utc": "2026-11-09T00:04:14.442028+00:00",
+  "tasks": [
+    {
+      "array_task": 0,
+      "configuration": "B1",
+      "seed": 1
+    },
+    {
+      "array_task": 1,
+      "configuration": "B1",
+      "seed": 2
+    },
+    {
+      "array_task": 2,
+      "configuration": "A0",
+      "seed": 2
+    },
+    {
+      "array_task": 3,
+      "configuration": "A1",
+      "seed": 1
+    },
+    {
+      "array_task": 4,
+      "configuration": "A1",
+      "seed": 2
+    },
+    {
+      "array_task": 5,
+      "configuration": "M0",
+      "seed": 2
+    },
+    {
+      "array_task": 6,
+      "configuration": "M1",
+      "seed": 1
+    },
+    {
+      "array_task": 7,
+      "configuration": "M1",
+      "seed": 2
+    }
+  ],
+  "target_epochs": 1000,
+  "array_expression": "0-7",
+  "concurrency_cap": null,
+  "gpu_task_hours": 7,
+  "reservation_gpu_hours": 56,
+  "budget_gpu_hours": 56,
+  "previous_batch_charge_gpu_hours": 0,
+  "retry_of": null,
+  "excluded_nodes": "ccc0388,ccc0390",
+  "previous_attempt_charge_gpu_hours": 0,
+  "jobs": {
+    "prepare": "12262180",
+    "array": "12262181",
+    "sync": "12262182",
+    "notify": "12262185"
+  },
+  "max_gpu_retries": 2,
+  "mail_user": "xinyan14@illinois.edu",
+  "verification": {
+    "cpu_unit_tests": 28,
+    "full_model_cpu_preflight": [
+      "B0",
+      "B1",
+      "A0",
+      "A1",
+      "M0",
+      "M1"
+    ],
+    "preflight_path": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/development-checks/batch3-20261108/READY.json",
+    "slurm_exclusions_verified": true,
+    "slurm_final_mail_verified": true
+  }
+}

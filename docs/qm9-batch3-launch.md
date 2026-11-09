@@ -1,6 +1,11 @@
 # Batch3: eight-run QM9 matrix completion
 
 The user authorized submission with final batch email enabled on 2026-11-08.
+Submitted: preparation **12262180**, eight-task A100 array **12262181**,
+sync/retry controller **12262182**, final email **12262185**.
+Executed immutable source: `19e128846be285bb5ad0d8cd6cae4c4688634182`.
+Submission record: `docs/submissions/qm9-batch3-12262181.json`.
+Check current scheduler state and launch.json before retries; do not duplicate.
 This is the eight-run ordering agreed in `qm9-matrix-completion-plan.md`.
 
 | Array task | Configuration | Seed | Purpose |
@@ -39,11 +44,20 @@ mail disabled. Native Slurm email reports COMPLETE/INCOMPLETE and run counts;
 full details are in batch-summary.json. See `batch-email-notifications.md` and
 `gpu-health-retries.md` for interrupted-submission safeguards.
 
-Planned new root:
+Staged root:
 `/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108`.
 Runs: `runs/<configuration>-seed<seed>/`, final `metrics/summary.json`.
 Backups:
 `/u/xinyan14/motiflow-artifacts/qm9-batch3/batch3-matrix-20261108/`.
 Historical successful runs and failed-allocation evidence are preserved.
 No D0/D1/A2 experiments are included; profiling is required before their full
-training. Job IDs will be recorded after submission; check them before retrying.
+training.
+
+Verification before submission: 28 CPU unit/infrastructure tests and all-six
+full-model train/sample/resume preflight checks passed under the cluster Python
+environment. Evidence:
+`/scratch/xinyan14/motiflow-experiments/qm9-batch3/development-checks/batch3-20261108/READY.json`.
+Slurm confirms array0-7, seven hours per task, ccc0388/ccc0390 excluded,
+GPU dependency afterok:12262180, controller afterany:12262181_*, final notifier
+afterany:12262182, and MailUser=xinyan14@illinois.edu with MailType=END,FAIL.
+All jobs were pending at initial verification. No artificial array throttle.

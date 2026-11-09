@@ -35,6 +35,14 @@ enabled. Current launch scope: `docs/qm9-batch3-launch.md` and
 `scripts/batch3_cluster.py`. Exactly 1000 epochs; explicit 56-hour exception;
 no throttle; GPU reset retries and email xinyan14@illinois.edu enabled.
 
+Batch3 is submitted: preparation 12262180, A100 array 12262181 (tasks0-7),
+sync/retry controller 12262182, final email notifier 12262185. Source `19e1288`.
+See `docs/submissions/qm9-batch3-12262181.json`; stage root is
+`/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108`.
+28 CPU tests and all-six full-model preflight checks passed. Slurm exclusions,
+dependencies and final email recipient/type verified. Check before resubmitting;
+never duplicate the submitted tasks.
+
 Investigate how graph structural information in the initial distribution and
 conditioning affects molecular validity (V), uniqueness (U), novelty (N), and
 their combined yield (VUN). Measure both final results and learning curves.

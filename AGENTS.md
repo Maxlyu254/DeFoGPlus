@@ -15,6 +15,14 @@ Batch email recipient confirmed: xinyan14@illinois.edu. New batch2-style launche
 use a single final CPU notification after sync and all retry waves. Read
 `docs/batch-email-notifications.md`; keep per-task/intermediate mail disabled.
 No delivery test or job was submitted during notification implementation.
+The user subsequently authorized and submitted the eight-run batch3:
+preparation 12262180, A100 array 12262181 (tasks 0-7), sync/retry 12262182,
+final email 12262185. Read `docs/submissions/qm9-batch3-12262181.json` and
+`docs/qm9-batch3-launch.md` before checking or retrying; never duplicate.
+Source 19e1288; root `/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108`.
+Runs B1 seeds 1,2; A0 seed 2; A1 seeds 1,2; M0 seed 2; M1 seeds 1,2. Fixed 1000 epochs,
+no throttle, 56-hour exception, faulty nodes excluded, reset retries and final
+email xinyan14@illinois.edu enabled. 28 CPU tests plus all-six preflight passed.
 
 Read `docs/degree-aware-vun-plan.md` before implementing molecular prior changes,
 experiment runners, or evaluation. It records the user's research objective,
