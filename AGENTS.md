@@ -30,6 +30,13 @@ See `docs/results/qm9-batch3-12262181/report.md`. Cost 51.76861/56 A100-hours;
 4.23139 remain. No continuation submitted. Across batches 17/18 implemented
 model/seed cells complete; B1 seed1 can be continued from 825 with log/attempt
 reconciliation. D0/D1/A2 remain unimplemented and require profiling first.
+User-authorized B1 seed1 continuation submitted: GPU 12355212, dependent CPU
+sync/email 12355214. Read `docs/submissions/qm9-B1-seed1-continuation-12355212.json`
+and `docs/qm9-b1-continuation.md` before retrying; never duplicate. Resume825 to
+1000 with original source19e1288; operations da9cd65. No GPU-hour budget cap,
+12-hour wall safeguard, faulty nodes excluded, email xinyan14@illinois.edu.
+Original848-epoch logs archived, active history reconciled to825. Runtime root:
+`/scratch/xinyan14/motiflow-experiments/qm9-batch3/continuations/B1-seed1-20261112`.
 
 Read `docs/degree-aware-vun-plan.md` before implementing molecular prior changes,
 experiment runners, or evaluation. It records the user's research objective,

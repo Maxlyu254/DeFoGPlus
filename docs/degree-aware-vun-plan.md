@@ -60,6 +60,13 @@ Plan `docs/qm9-b1-continuation.md`: resume epoch825 from original source19e1288,
 archive original metrics and checkpoint, reconcile active train logs to825,
 12-hour wall safeguard, xinyan14@illinois.edu notified after GPU and W&B sync.
 
+Continuation submitted: GPU12355212, CPU sync/email12355214. Read
+`docs/submissions/qm9-B1-seed1-continuation-12355212.json` before any retry.
+Root `/scratch/xinyan14/motiflow-experiments/qm9-batch3/continuations/B1-seed1-20261112`.
+No GPU-hour budget cap;12-hour scheduler safeguard verified. Operational
+source da9cd65, original training source19e1288. Archived original metrics and
+checkpoint; active epoch history reconciled to825. Check jobs; do not duplicate.
+
 Investigate how graph structural information in the initial distribution and
 conditioning affects molecular validity (V), uniqueness (U), novelty (N), and
 their combined yield (VUN). Measure both final results and learning curves.

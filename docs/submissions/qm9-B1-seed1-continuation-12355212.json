@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "batch_root": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108",
+  "run_root": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108/runs/B1-seed1",
+  "operations_commit": "da9cd651c35b9cba3ff797a84b7c4adbc2fa1d8d",
+  "training_source": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108/source",
+  "training_commit": "19e128846be285bb5ad0d8cd6cae4c4688634182",
+  "python": "/scratch/xinyan14/motiflow-benchmarks/qm9-a100-20261026T041904Z/environment/bin/python",
+  "checkpoint": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/continuations/B1-seed1-20261112/backup/epoch0825-20261110T071937-4496ebd0.ckpt",
+  "checkpoint_sha256": "a4e7974fef3e780d9efd05070b9d88c699e3b9e31fc3a1861c68d5e3e311bb06",
+  "resume_epoch": 825,
+  "target_epochs": 1000,
+  "configuration": "B1",
+  "seed": 1,
+  "wall_safeguard_hours": 12,
+  "budget_limit_gpu_hours": null,
+  "excluded_nodes": "ccc0388,ccc0390",
+  "mail_user": "xinyan14@illinois.edu",
+  "existing_wandb_sessions": [
+    "offline-run-20261110_011937-65c71748afe4"
+  ],
+  "reconciliation": {
+    "original_epochs": 848,
+    "active_epochs": 825,
+    "archived_tail_epochs": 23,
+    "original_sha256": "fcfd97ef6d19b467076050ac2607ee8dfc089fec6d74de10692c200f6c5ef7be",
+    "active_sha256": "483673c2a44862da3594cbad6e309619ef2a492245bff682e23a0d73a5423ee0"
+  },
+  "jobs": {
+    "gpu": "12355212",
+    "sync_notify": "12355214"
+  }
+}

@@ -4,6 +4,12 @@ User instruction on 2026-11-12: submit continuation to finish exactly1000
 epochs, without a GPU-hour budget cap, but with a generous wall-time safeguard;
 email xinyan14@illinois.edu when finished.
 
+Submitted GPU job **12355212**, dependent CPU sync/email **12355214**.
+Slurm verified12-hour safeguard, ccc0388/ccc0390 excluded, and final email
+END,FAIL to xinyan14@illinois.edu afterany:12355212. Both pending at verification.
+Record: `docs/submissions/qm9-B1-seed1-continuation-12355212.json`.
+Check scheduler and continuation.json before any retry; do not duplicate.
+
 Plan: resume the full epoch825 checkpoint (optimizer, callback and RNG state)
 from the original immutable source19e1288. The original trajectory logged848
 epochs, so archive all original metrics and preserve a checkpoint copy before
@@ -33,4 +39,12 @@ the authoritative follow-up. No other model is restarted.
 Operational source is edited locally and synced through Git. Training source
 and prior immutable batch are not edited. Runtime backups, checkpoints and
 reconciliation records stay outside Git under the continuation root.
-Submission IDs will be recorded after submission; check them before retrying.
+Submission IDs are recorded above; check them before retrying.
+
+Runtime root:
+`/scratch/xinyan14/motiflow-experiments/qm9-batch3/continuations/B1-seed1-20261112`.
+Operational source da9cd65; original immutable training source19e1288.
+Actual checkpoint SHA/signature/global step79,200 and RNG/optimizer state
+validated on CPU. Four continuation tests passed locally and on cluster.
+Original848-epoch metrics and epoch825 checkpoint preserved under backup/;
+active train.jsonl now contains825 rows, with23 replayed epochs archived.
