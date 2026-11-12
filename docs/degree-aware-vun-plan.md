@@ -54,6 +54,12 @@ early-validity advantage repeats in3 seeds; structural edge priors show no
 consistent final-validity benefit; M1's small VUN advantage over M0 repeats.
 No continuation was submitted during assessment. D0/D1/A2 still need profiling.
 
+User subsequently authorizes a B1 seed1 continuation to exactly1000 epochs,
+without a GPU-hour budget cap, with a generous safeguard and completion email.
+Plan `docs/qm9-b1-continuation.md`: resume epoch825 from original source19e1288,
+archive original metrics and checkpoint, reconcile active train logs to825,
+12-hour wall safeguard, xinyan14@illinois.edu notified after GPU and W&B sync.
+
 Investigate how graph structural information in the initial distribution and
 conditioning affects molecular validity (V), uniqueness (U), novelty (N), and
 their combined yield (VUN). Measure both final results and learning curves.
