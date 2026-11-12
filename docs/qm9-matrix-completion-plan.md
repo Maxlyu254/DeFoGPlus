@@ -15,20 +15,22 @@ erase historical allocation charges or replenish an already-running batch.
 The original full reference matrix is nine configurations by training seeds
 0,1,2, all at exactly 1000 epochs. This is a proposed definition of completion,
 not a launch authorization or a requirement to perform every optional study.
-There are ten completed cells and seventeen missing cells. Seed0 is the
+As of 2026-11-12 there are seventeen completed cells and ten unfinished cells:
+B1 seed1 needs continuation from epoch825, and D0/D1/A2 need implementation
+and profiling. See `results/qm9-batch3-12262181/report.md`. Seed0 is the
 exploratory screen. Failed allocations count toward cost, not completed cells.
 
 | ID | Meaning | Seed0 | Seed1 | Seed2 | Additional runs |
 | --- | --- | --- | --- | --- | ---: |
 | B0 | Original global node/edge marginal | Complete | Complete | Complete | 0 |
-| B1 | Size-dependent edge existence q(N) | Complete | Missing | Missing | 2 |
+| B1 | Size-dependent edge existence q(N) | Complete | Timeout, checkpoint825 | Complete | 1 continuation |
 | D0 | Clean target-degree conditioning, global edge prior | Unimplemented | Unimplemented | Unimplemented | 3 |
 | D1 | D0 plus Chung-Lu edge prior | Unimplemented | Unimplemented | Unimplemented | 3 |
-| A0 | Fixed actual atoms, global edge prior | Complete | Complete | Missing | 1 |
-| A1 | Fixed actual atoms, atom-based Chung-Lu edge prior | Complete | Missing | Missing | 2 |
+| A0 | Fixed actual atoms, global edge prior | Complete | Complete | Complete | 0 |
+| A1 | Fixed actual atoms, atom-based Chung-Lu edge prior | Complete | Complete | Complete | 0 |
 | A2 | A1 plus endpoint-atom-specific existing-bond type prior | Unimplemented | Unimplemented | Unimplemented | 3 |
-| M0 | Persistent reference atoms, mutable actual atoms, global edges | Complete | Complete | Failed before training | 1 |
-| M1 | M0 plus reference-based Chung-Lu edges | Complete | Failed before training | Failed before training | 2 |
+| M0 | Persistent reference atoms, mutable actual atoms, global edges | Complete | Complete | Complete | 0 |
+| M1 | M0 plus reference-based Chung-Lu edges | Complete | Complete | Complete | 0 |
 
 Matched scientific contrasts: B1/B0 (size-specific density); D1/D0 (degree
 prior beyond identical degree conditioning); A1/A0 (atom-based edge prior);

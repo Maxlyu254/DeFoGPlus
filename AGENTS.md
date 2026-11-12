@@ -23,6 +23,13 @@ Source 19e1288; root `/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-m
 Runs B1 seeds 1,2; A0 seed 2; A1 seeds 1,2; M0 seed 2; M1 seeds 1,2. Fixed 1000 epochs,
 no throttle, 56-hour exception, faulty nodes excluded, reset retries and final
 email xinyan14@illinois.edu enabled. 28 CPU tests plus all-six preflight passed.
+Verified 2026-11-12: batch3 tasks 1-7 completed; B1 seed1 task0 TIMEOUT, logged 848
+epochs, latest checkpoint 825. No reset retry triggered. Controller synced all
+sessions then failed for incomplete run; notifier completed with INCOMPLETE 7/8.
+See `docs/results/qm9-batch3-12262181/report.md`. Cost 51.76861/56 A100-hours;
+4.23139 remain. No continuation submitted. Across batches 17/18 implemented
+model/seed cells complete; B1 seed1 can be continued from 825 with log/attempt
+reconciliation. D0/D1/A2 remain unimplemented and require profiling first.
 
 Read `docs/degree-aware-vun-plan.md` before implementing molecular prior changes,
 experiment runners, or evaluation. It records the user's research objective,

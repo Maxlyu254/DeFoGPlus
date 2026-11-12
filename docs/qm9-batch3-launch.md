@@ -61,3 +61,9 @@ Slurm confirms array0-7, seven hours per task, ccc0388/ccc0390 excluded,
 GPU dependency afterok:12262180, controller afterany:12262181_*, final notifier
 afterany:12262182, and MailUser=xinyan14@illinois.edu with MailType=END,FAIL.
 All jobs were pending at initial verification. No artificial array throttle.
+
+Status verified2026-11-12: tasks1-7 completed; task0 B1 seed1 timed out at the
+seven-hour limit (848 epochs logged, latest durable checkpoint825). Preparation
+and notifier completed; sync/controller uploaded all eight sessions and exited
+nonzero for the unresolved timeout. No auto retry waves. Report:
+`docs/results/qm9-batch3-12262181/report.md`. No new jobs submitted in assessment.

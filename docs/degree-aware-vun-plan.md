@@ -43,6 +43,17 @@ See `docs/submissions/qm9-batch3-12262181.json`; stage root is
 dependencies and final email recipient/type verified. Check before resubmitting;
 never duplicate the submitted tasks.
 
+Verified 2026-11-12: batch3 tasks1-7 completed 1000 epochs/96,000 steps; B1
+seed1 (task0) timed out after logging848 epochs, latest durable checkpoint825.
+No reset failures or automatic retry waves. All eight offline sessions synced;
+controller exited nonzero for the incomplete run. Final notification job
+completed and recorded INCOMPLETE 7/8 (inbox delivery not independently verified).
+Allocation51.76861 of56 hours, leaving4.23139. Assessment:
+`docs/results/qm9-batch3-12262181/report.md`. Combined17 complete runs: A0's
+early-validity advantage repeats in3 seeds; structural edge priors show no
+consistent final-validity benefit; M1's small VUN advantage over M0 repeats.
+No continuation was submitted during assessment. D0/D1/A2 still need profiling.
+
 Investigate how graph structural information in the initial distribution and
 conditioning affects molecular validity (V), uniqueness (U), novelty (N), and
 their combined yield (VUN). Measure both final results and learning curves.
