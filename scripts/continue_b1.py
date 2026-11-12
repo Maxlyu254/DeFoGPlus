@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tarfile
 
 from batch1_cluster import command, write_json
@@ -54,6 +55,9 @@ def stage(root,batch):
     expected=index['sha256'][checkpoint.name]
     if digest(checkpoint)!=expected:
         raise RuntimeError('Recovery checksum mismatch')
+    # Checkpoints contain dataset-info objects from the original source tree.
+    training_source=original['settings']['BATCH1_SOURCE']
+    sys.path[:0]=[training_source,str(Path(training_source)/'src')]
     import torch
     state=torch.load(checkpoint,map_location='cpu',weights_only=False)
     epoch=state['batch1']['completed_epochs']
