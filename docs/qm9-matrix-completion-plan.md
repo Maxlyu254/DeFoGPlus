@@ -15,15 +15,15 @@ erase historical allocation charges or replenish an already-running batch.
 The original full reference matrix is nine configurations by training seeds
 0,1,2, all at exactly 1000 epochs. This is a proposed definition of completion,
 not a launch authorization or a requirement to perform every optional study.
-As of 2026-11-12 there are seventeen completed cells and ten unfinished cells:
-B1 seed1 needs continuation from epoch825, and D0/D1/A2 need implementation
-and profiling. See `results/qm9-batch3-12262181/report.md`. Seed0 is the
+As of 2026-11-19 there are eighteen completed cells and nine unfinished cells.
+B1 seed1's continuation completed; D0/D1/A2 still need implementation and
+profiling. See `results/qm9-epoch1000-plateau-20261119/report.md`. Seed0 is the
 exploratory screen. Failed allocations count toward cost, not completed cells.
 
 | ID | Meaning | Seed0 | Seed1 | Seed2 | Additional runs |
 | --- | --- | --- | --- | --- | ---: |
 | B0 | Original global node/edge marginal | Complete | Complete | Complete | 0 |
-| B1 | Size-dependent edge existence q(N) | Complete | Timeout, checkpoint825 | Complete | 1 continuation |
+| B1 | Size-dependent edge existence q(N) | Complete | Complete after continuation | Complete | 0 |
 | D0 | Clean target-degree conditioning, global edge prior | Unimplemented | Unimplemented | Unimplemented | 3 |
 | D1 | D0 plus Chung-Lu edge prior | Unimplemented | Unimplemented | Unimplemented | 3 |
 | A0 | Fixed actual atoms, global edge prior | Complete | Complete | Complete | 0 |

@@ -67,6 +67,14 @@ No GPU-hour budget cap;12-hour scheduler safeguard verified. Operational
 source da9cd65, original training source19e1288. Archived original metrics and
 checkpoint; active epoch history reconciled to825. Check jobs; do not duplicate.
 
+Verified2026-11-19: B1 continuation and sync/email both COMPLETED0:0. B1 reached
+1000 epochs/96,000 steps; reconciled log has1000 unique epochs. Continuation
+cost1.4025 hours, batch3 plus continuation53.17111. All18 cells for the six
+implemented models now complete. Late-loss/V/U/N assessment:
+`docs/results/qm9-epoch1000-plateau-20261119/report.md`: loss and V/U nearly
+plateaued; novelty still falls late for B1/A0, while other curves look flatter.
+No evidence that all metrics have converged; no extra jobs submitted.
+
 Investigate how graph structural information in the initial distribution and
 conditioning affects molecular validity (V), uniqueness (U), novelty (N), and
 their combined yield (VUN). Measure both final results and learning curves.

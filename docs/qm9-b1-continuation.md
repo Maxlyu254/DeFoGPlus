@@ -48,3 +48,10 @@ Actual checkpoint SHA/signature/global step79,200 and RNG/optimizer state
 validated on CPU. Four continuation tests passed locally and on cluster.
 Original848-epoch metrics and epoch825 checkpoint preserved under backup/;
 active train.jsonl now contains825 rows, with23 replayed epochs archived.
+
+Verified2026-11-19: GPU12355212 COMPLETED0:0 in1:24:09; sync/email12355214
+COMPLETED0:0 in21 seconds. The run reached1000 epochs/96,000 steps with1000
+unique active-history epoch rows. Continuation cost1.4025 A100-hours; original
+batch3 plus continuation total53.17111 hours. All18 implemented-model/seed cells
+are now complete. See `results/qm9-epoch1000-plateau-20261119/report.md` for
+the loss and late-metric stability assessment. No new jobs were submitted.

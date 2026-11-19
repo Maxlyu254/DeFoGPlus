@@ -37,6 +37,12 @@ and `docs/qm9-b1-continuation.md` before retrying; never duplicate. Resume825 to
 12-hour wall safeguard, faulty nodes excluded, email xinyan14@illinois.edu.
 Original848-epoch logs archived, active history reconciled to825. Runtime root:
 `/scratch/xinyan14/motiflow-experiments/qm9-batch3/continuations/B1-seed1-20261112`.
+Verified2026-11-19: continuation12355212 and sync/email12355214 COMPLETED0:0;
+B1 reached1000 epochs/96,000 steps with1000 unique log rows. All18 cells for
+B0/B1/A0/A1/M0/M1 seeds0,1,2 complete. Continuation1.4025 A100-hours;
+batch3+continuation53.17111 hours. Read
+`docs/results/qm9-epoch1000-plateau-20261119/report.md`: late loss and V/U are
+nearly flat; novelty is not uniformly plateaued (B1/A0 still decline at900–1000).
 
 Read `docs/degree-aware-vun-plan.md` before implementing molecular prior changes,
 experiment runners, or evaluation. It records the user's research objective,
