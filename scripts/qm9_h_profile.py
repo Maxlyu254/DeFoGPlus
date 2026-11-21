@@ -43,7 +43,7 @@ def load(variant, smoke=False, create=False):
 
 class EpochTimer(pl.Callback):
     def __init__(self, data, log, rows):
-        self.data, self.log, self.rows = data, log, rows
+        self.data, self.run_log, self.rows = data, log, rows
 
     def on_train_start(self, trainer, model):
         if model.batch1_loaded:
@@ -71,8 +71,8 @@ class EpochTimer(pl.Callback):
                    peak_gpu_allocated_bytes=torch.cuda.max_memory_allocated() if model.device.type=='cuda' else 0,
                    peak_gpu_reserved_bytes=torch.cuda.max_memory_reserved() if model.device.type=='cuda' else 0,
                    warmup=epoch<=2, resume_check=epoch==8)
-        self.rows.append(self.log.write('train', **row))
-        export_csv(self.log.root/'metrics/train.csv', self.rows)
+        self.rows.append(self.run_log.write('train', **row))
+        export_csv(self.run_log.root/'metrics/train.csv', self.rows)
         print(json.dumps(row), flush=True)
 
 
@@ -238,6 +238,8 @@ def profile(root,variant):
     cfg.batch1.inference_batch_size=selected['inference_batches'][variant]
     model,log,rows,io=fit_resume(cfg,data,infos,smiles,stats,metadata,directory,
                                  accumulation=selected['gradient_accumulation'])
+    # Lightning tears down the fit accelerator before returning from fit().
+    model.cuda()
     reference=canonical_reference(smiles['train'])
     pools=[]
     for count in [2000,10000]:
