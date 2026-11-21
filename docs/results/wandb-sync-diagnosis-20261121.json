@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-21",
+  "scope": "Diagnose missing defog-qm9-batch1, batch2 and batch3 W&B projects; no credential changes or training resubmissions",
+  "credentials": {
+    "file": "/u/xinyan14/.config/defog/wandb-env.sh",
+    "exists": true,
+    "file_mode": "0600",
+    "api_key_present_after_explicit_source": true,
+    "key_value_recorded": false,
+    "api_host": "https://api.wandb.ai",
+    "authenticated_username": "maxlyu254",
+    "team": "maxlyu254-university-of-illinois-urbana-champaign",
+    "team_read_only": false,
+    "team_read_only_admin": false,
+    "existing_private_project_readable": "graph_dfm_qm9",
+    "conclusion": "No missing/invalid-key evidence. Actual run-write permission remains untested because the SDK crashes before the upsert mutation."
+  },
+  "sdk_version": "0.20.1",
+  "reproduced_failure": {
+    "existing_offline_session": "/scratch/xinyan14/motiflow-experiments/qm9-batch1/batch1-ready-20261026/runs/B0-seed0/wandb/offline-run-20261027_042749-b51806e2d97a",
+    "run_id": "b51806e2d97a",
+    "diagnostic": "Replayed this existing run with its original ID and intercepted SendManager._handle_error to surface the error; disabled new synced-marker writes.",
+    "error": "'NoneType' object has no attribute 'get'",
+    "call_chain": ["SyncThread.run", "SendManager.send_run", "SendManager._init_run", "InternalApi.upsert_run", "InternalApi.server_settings_introspection"],
+    "faulty_expression": "res.get('ServerSettingsType', {}).get('fields', [{}])",
+    "server_query": "ServerSettingsType: __type(name: \"ServerSettings\") { fields { name } }",
+    "explanation": "Server returns null for ServerSettingsType; dict.get's default does not replace an explicitly null value. The old SDK dereferences None before sending the run-creation mutation."
+  },
+  "false_success": {
+    "sdk_source": "wandb/sync/sync.py:SyncThread.run",
+    "behavior": "run_result.error is ignored. The failed RunRecord still supplies a plausible URL, and encountering an offline exit record allows a .synced marker and done output despite the error.",
+    "project_wrapper_behavior": "subprocess.run(check=True) checks only the CLI exit code; no subsequent cloud run/history verification existed.",
+    "evidence": "Original B0 offline file is 4915581 bytes, contains 3040 history and 6082 summary records, and has a synced marker, while its cloud project query returns null."
+  },
+  "remote_diagnostic_errors": "/scratch/xinyan14/motiflow-experiments/wandb-sync-diagnostics/20261121/B0-sync-errors.json",
+  "data_status": "Training metrics and offline W&B records remain on cluster; no retraining is required.",
+  "recommended_repair": [
+    "Use a compatible W&B SDK in a separate synchronization environment, preserving the training environment and immutable source archives.",
+    "Replay the existing offline records under their original entity/project/run IDs, including records previously marked synced.",
+    "Verify remote run presence and expected epoch metrics through the authenticated API; fail the wrapper if verification fails.",
+    "If the repaired client exposes an actual 401/403 or write-permission failure, report it to the user before requesting credential changes."
+  ]
+}
