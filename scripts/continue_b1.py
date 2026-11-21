@@ -11,6 +11,7 @@ import tarfile
 
 from batch1_cluster import command, write_json
 from gpu_retry import task_records
+from wandb_sync import sync_session
 
 REPO=Path(__file__).resolve().parents[1]
 
@@ -130,7 +131,7 @@ def sync(root,plan):
     result=dict(gpu_state=fields[1],allocated_gpu_hours=int(fields[2])/3600,budget_limit_gpu_hours=None)
     try:
         for session in sessions:
-            subprocess.run([plan['python'],'-m','wandb','sync',str(session)],check=True)
+            sync_session(session, plan['python'])
         summary=json.loads((run/'metrics/summary.json').read_text()) if (run/'metrics/summary.json').is_file() else {}
         result.update(completed_epochs=summary.get('completed_epochs'),status=summary.get('status','incomplete'))
         if fields[1]!='COMPLETED' or summary.get('status')!='completed' or summary.get('completed_epochs')!=1000:

@@ -12,6 +12,7 @@ import tarfile
 
 from batch1_cluster import command, write_json, PYTHON, DATA
 from gpu_retry import reconcile, waves
+from wandb_sync import sync_session
 
 ROOT = Path(__file__).resolve().parents[1]
 TASKS = [("B0", 1), ("B0", 2), ("A0", 1), ("M0", 1), ("M0", 2), ("M1", 1), ("M1", 2)]
@@ -171,7 +172,7 @@ def main(tasks=TASKS, batch_name='batch2', budget_hours=50):
             if pending:
                 return
             for session in sorted((root/"runs").glob("*/wandb/offline-run-*")):
-                subprocess.run([PYTHON,"-m","wandb","sync",str(session)], check=True)
+                sync_session(session, PYTHON)
             if plan.get('retry_stopped'):
                 raise RuntimeError('Batch has unresolved failures; see retry_stopped in launch.json')
     else:

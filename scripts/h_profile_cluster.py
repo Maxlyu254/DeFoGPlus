@@ -13,6 +13,7 @@ import tarfile
 from batch1_cluster import command,write_json,PYTHON,DATA
 from batch2_cluster import submit,accounting
 from gpu_retry import reconcile
+from wandb_sync import sync_session
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -56,7 +57,7 @@ def sync(root):
         if pending:
             return
         for session in (root/'profiles').glob('*/wandb/offline-run-*'):
-            subprocess.run([PYTHON,'-m','wandb','sync',str(session)],check=True)
+            sync_session(session, PYTHON)
         summaries={}
         for variant in ['B0','M1']:
             path=root/'profiles'/variant/'summary.json'

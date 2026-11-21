@@ -13,6 +13,7 @@ import re
 import shlex
 import subprocess
 import tarfile
+from wandb_sync import sync_session
 
 REPO = Path(__file__).resolve().parents[1]
 PYTHON = "/scratch/xinyan14/motiflow-benchmarks/qm9-a100-20261026T041904Z/environment/bin/python"
@@ -119,9 +120,8 @@ def submit(args, root, plan):
 
 
 def sync(root, plan):
-    python = plan["settings"]["BATCH1_PYTHON"]
     for session in sorted((root / "runs").glob("*/wandb/offline-run-*")):
-        subprocess.run([python, "-m", "wandb", "sync", str(session)], check=True)
+        sync_session(session, plan["settings"]["BATCH1_PYTHON"])
     accounting(root, plan)
 
 
