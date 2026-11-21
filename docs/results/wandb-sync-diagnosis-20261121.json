@@ -1,5 +1,11 @@
 {
   "date": "2026-11-21",
+  "resolution": {
+    "status": "fixed_and_recovered",
+    "report": "docs/results/wandb-sync-recovery-20261121.json",
+    "credentials": "Existing API key successfully uploaded with compatible SDK; no replacement needed.",
+    "implementation": "scripts/wandb_sync.py; isolated W&B0.31.2; exact cloud history verification"
+  },
   "scope": "Diagnose missing defog-qm9-batch1, batch2 and batch3 W&B projects; no credential changes or training resubmissions",
   "credentials": {
     "file": "/u/xinyan14/.config/defog/wandb-env.sh",

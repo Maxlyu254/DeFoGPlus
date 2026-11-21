@@ -1,0 +1,750 @@
+{
+  "date": "2026-11-21",
+  "status": "verified",
+  "repair_source_commit": "ed094dc7314479f04b36d44fd1aaf6fc0adf3edb",
+  "original_sync_sdk": "0.20.1",
+  "sync_sdk": "0.31.2",
+  "sync_python": "/scratch/xinyan14/motiflow-tools/wandb-sync/0.31.2/bin/python",
+  "credentials": "Existing key authenticated and successfully uploaded; no credential changes.",
+  "training_environment": "Unchanged; only isolated sync environment installed.",
+  "recovered_sessions": 19,
+  "logical_model_seed_cells": 18,
+  "matched_offline_history_rows": 42733,
+  "matched_offline_scalar_values": 802313,
+  "projects": {
+    "defog-qm9-batch1": {
+      "sessions": 6,
+      "history_rows": 14240,
+      "scalar_values": 267124,
+      "access": "PRIVATE",
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch1/workspace"
+    },
+    "defog-qm9-batch2": {
+      "sessions": 4,
+      "history_rows": 10148,
+      "scalar_values": 191441,
+      "access": "PRIVATE",
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch2/workspace"
+    },
+    "defog-qm9-batch3": {
+      "sessions": 9,
+      "history_rows": 18345,
+      "scalar_values": 343748,
+      "access": "PRIVATE",
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch3/workspace"
+    }
+  },
+  "active_local_history_audit": {
+    "status": "verified",
+    "logical_runs": [
+      {
+        "run": "A0-seed0",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 6
+        }
+      },
+      {
+        "run": "A1-seed0",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 6
+        }
+      },
+      {
+        "run": "B0-seed0",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 6
+        }
+      },
+      {
+        "run": "B1-seed0",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 6
+        }
+      },
+      {
+        "run": "M0-seed0",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 6
+        }
+      },
+      {
+        "run": "M1-seed0",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 6
+        }
+      },
+      {
+        "run": "A0-seed1",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 3
+        }
+      },
+      {
+        "run": "B0-seed1",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 3
+        }
+      },
+      {
+        "run": "B0-seed2",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 3
+        }
+      },
+      {
+        "run": "M0-seed1",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 3
+        }
+      },
+      {
+        "run": "A0-seed2",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 3
+        }
+      },
+      {
+        "run": "A1-seed1",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 3
+        }
+      },
+      {
+        "run": "A1-seed2",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 3
+        }
+      },
+      {
+        "run": "B1-seed1",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 3
+        }
+      },
+      {
+        "run": "B1-seed2",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 3
+        }
+      },
+      {
+        "run": "M0-seed2",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 3
+        }
+      },
+      {
+        "run": "M1-seed1",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 3
+        }
+      },
+      {
+        "run": "M1-seed2",
+        "training_epochs": 1000,
+        "last_epoch": 1000,
+        "rows": {
+          "train": 1000,
+          "validation": 17,
+          "curve": 17,
+          "final": 3
+        }
+      }
+    ],
+    "row_counts": {
+      "train": 18000,
+      "validation": 306,
+      "curve": 306,
+      "final": 72
+    },
+    "matched_scalar_values": 242028
+  },
+  "raw_report": "/scratch/xinyan14/motiflow-experiments/wandb-recovery/20261121/verified-report.json",
+  "home_archive": "/u/xinyan14/motiflow-artifacts/wandb-recovery/20261121",
+  "live_profile_sync": {
+    "gpu": "12622943",
+    "sync": "12622945",
+    "notify": "12622951",
+    "original_model_source": "5bea29934d6c18aa11bcb350869e98cee2ccac4b",
+    "operations_source": "ed094dc7314479f04b36d44fd1aaf6fc0adf3edb",
+    "note": "Pending CPU jobs held during runtime-manager update then released; original IDs, dependencies and GPU source preserved."
+  },
+  "validation": {
+    "unit_tests_passed": 29,
+    "python_compilation": "passed",
+    "shell_syntax": "passed",
+    "live_cloud_comparison": "All complete scalar history records in 19 sessions; all 18 canonical active histories separately matched."
+  },
+  "interrupted_attempt": {
+    "run_id": "65c71748afe4",
+    "cloud_state": "failed",
+    "has_offline_exit_record": false,
+    "last_available_offline_training_epoch": 841,
+    "authoritative_epoch_cutoff": 825,
+    "continuation_run_id": "1b15e4cb19f2",
+    "continuation_epochs": "826-1000",
+    "note": "Original Slurm TIMEOUT file has an unfinished tail. Every complete offline history row was recovered and verified; use the canonical local logs to select the original attempt only through epoch825. The resumed final history is complete."
+  },
+  "sessions": [
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch1",
+      "run_id": "3aea4ed78b8b",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch1/batch1-ready-20261026/runs/A1-seed0/wandb/offline-run-20261027_150404-3aea4ed78b8b",
+      "file_sha256": "d5b83af571776f57a96b906f5ba7ec0a85089aebe32e25a33ab4a52900bfe90c",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:11:21.741525+00:00",
+      "status": "verified",
+      "matched_history_rows": 1040,
+      "matched_scalar_values": 17820,
+      "cloud_history_rows": 1040,
+      "namespace_rows": {
+        "train": 1000,
+        "validation": 17,
+        "curve": 17,
+        "final": 6
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch1/runs/3aea4ed78b8b",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch1",
+      "run_id": "f231ac231a2d",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch1/batch1-ready-20261026/runs/A0-seed0/wandb/offline-run-20261027_104531-f231ac231a2d",
+      "file_sha256": "14f3d6fe428c2cd216cab6fc8cdcb42c6c57daa6456f81418418cc392a3bf869",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:11:21.777124+00:00",
+      "status": "verified",
+      "matched_history_rows": 1040,
+      "matched_scalar_values": 17820,
+      "cloud_history_rows": 1040,
+      "namespace_rows": {
+        "train": 1000,
+        "validation": 17,
+        "curve": 17,
+        "final": 6
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch1/runs/f231ac231a2d",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch1",
+      "run_id": "b51806e2d97a",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch1/batch1-ready-20261026/runs/B0-seed0/wandb/offline-run-20261027_042749-b51806e2d97a",
+      "file_sha256": "cb32c826b221719316515b09b5566b5c752abe212e959af321ae8f5476ba2caf",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:11:21.927000+00:00",
+      "status": "verified",
+      "matched_history_rows": 3040,
+      "matched_scalar_values": 57871,
+      "cloud_history_rows": 3040,
+      "namespace_rows": {
+        "train": 2000,
+        "validation": 17,
+        "curve": 17,
+        "final": 6
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch1/runs/b51806e2d97a",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch1",
+      "run_id": "8d5d6b871b10",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch1/batch1-ready-20261026/runs/B1-seed0/wandb/offline-run-20261027_083925-8d5d6b871b10",
+      "file_sha256": "b440a4e7af54d8894e2037688d8022232e5c35c15eb565cb13d097e7581c7daf",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:11:27.485476+00:00",
+      "status": "verified",
+      "matched_history_rows": 3040,
+      "matched_scalar_values": 57871,
+      "cloud_history_rows": 3040,
+      "namespace_rows": {
+        "train": 2000,
+        "validation": 17,
+        "curve": 17,
+        "final": 6
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch1/runs/8d5d6b871b10",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch1",
+      "run_id": "b0f81f74d6cb",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch1/batch1-ready-20261026/runs/M0-seed0/wandb/offline-run-20261027_165906-b0f81f74d6cb",
+      "file_sha256": "8c0cf9f81d03ccd269077d19bc3c4c57750331e8aa1bee044a091e8e67af96b1",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:11:27.508761+00:00",
+      "status": "verified",
+      "matched_history_rows": 3040,
+      "matched_scalar_values": 57871,
+      "cloud_history_rows": 3040,
+      "namespace_rows": {
+        "train": 2000,
+        "validation": 17,
+        "curve": 17,
+        "final": 6
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch1/runs/b0f81f74d6cb",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch1",
+      "run_id": "24b001c3c9ab",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch1/batch1-ready-20261026/runs/M1-seed0/wandb/offline-run-20261027_211019-24b001c3c9ab",
+      "file_sha256": "0084f3e82967ee5f96a14e41e64666553e01cac7bba265cd56852410294a68f9",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:11:28.718869+00:00",
+      "status": "verified",
+      "matched_history_rows": 3040,
+      "matched_scalar_values": 57871,
+      "cloud_history_rows": 3040,
+      "namespace_rows": {
+        "train": 2000,
+        "validation": 17,
+        "curve": 17,
+        "final": 6
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch1/runs/24b001c3c9ab",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch2",
+      "run_id": "232cf29b173c",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch2/batch2-retry-20261029/runs/A0-seed1/wandb/offline-run-20261030_171344-232cf29b173c",
+      "file_sha256": "9a3a6887fffeb4dd148d92f49a9a2e6ac528797ac6188d58c4b85b88e4d3ffa8",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:11:33.772740+00:00",
+      "status": "verified",
+      "matched_history_rows": 1037,
+      "matched_scalar_values": 17822,
+      "cloud_history_rows": 1037,
+      "namespace_rows": {
+        "train": 1000,
+        "validation": 17,
+        "curve": 17,
+        "final": 3
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch2/runs/232cf29b173c",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch2",
+      "run_id": "561ece53b8bc",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch2/batch2-retry-20261029/runs/B0-seed1/wandb/offline-run-20261030_104110-561ece53b8bc",
+      "file_sha256": "bcabaef2c818752369f98373c479b3ff0a0efda0c56b1cc910dd498efa20763e",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:12:38.585320+00:00",
+      "status": "verified",
+      "matched_history_rows": 3037,
+      "matched_scalar_values": 57873,
+      "cloud_history_rows": 3037,
+      "namespace_rows": {
+        "train": 2000,
+        "validation": 17,
+        "curve": 17,
+        "final": 3
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch2/runs/561ece53b8bc",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch2",
+      "run_id": "ed96f88212f8",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch2/batch2-retry-20261029/runs/B0-seed2/wandb/offline-run-20261030_104316-ed96f88212f8",
+      "file_sha256": "283b57cdbf02154925f6dc33442c16f473f98a509bc302a0fcf23a921f15e14d",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:12:40.187444+00:00",
+      "status": "verified",
+      "matched_history_rows": 3037,
+      "matched_scalar_values": 57873,
+      "cloud_history_rows": 3037,
+      "namespace_rows": {
+        "train": 2000,
+        "validation": 17,
+        "curve": 17,
+        "final": 3
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch2/runs/ed96f88212f8",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch2",
+      "run_id": "cfe8026fd914",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch2/batch2-retry-20261029/runs/M0-seed1/wandb/offline-run-20261030_180525-cfe8026fd914",
+      "file_sha256": "781daddf84faa389a57583ed1ee9eb7bf68085fae70f43bd8e39039303446a07",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:12:43.212620+00:00",
+      "status": "verified",
+      "matched_history_rows": 3037,
+      "matched_scalar_values": 57873,
+      "cloud_history_rows": 3037,
+      "namespace_rows": {
+        "train": 2000,
+        "validation": 17,
+        "curve": 17,
+        "final": 3
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch2/runs/cfe8026fd914",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch3",
+      "run_id": "e09e3d5e7eb8",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108/runs/A0-seed2/wandb/offline-run-20261110_145406-e09e3d5e7eb8",
+      "file_sha256": "7e93cac55d4340472e31564902c0d729da5333adeb556a874dd56a9b43e9c52f",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:13:50.718019+00:00",
+      "status": "verified",
+      "matched_history_rows": 1037,
+      "matched_scalar_values": 17822,
+      "cloud_history_rows": 1037,
+      "namespace_rows": {
+        "train": 1000,
+        "validation": 17,
+        "curve": 17,
+        "final": 3
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch3/runs/e09e3d5e7eb8",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch3",
+      "run_id": "c7bcfe88ca1e",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108/runs/A1-seed1/wandb/offline-run-20261110_210902-c7bcfe88ca1e",
+      "file_sha256": "e39e762d952fcb5744131ab9f5aad81aa405e00640a0af3e6a3beabd6fa6186f",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:13:51.294433+00:00",
+      "status": "verified",
+      "matched_history_rows": 1037,
+      "matched_scalar_values": 17822,
+      "cloud_history_rows": 1037,
+      "namespace_rows": {
+        "train": 1000,
+        "validation": 17,
+        "curve": 17,
+        "final": 3
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch3/runs/c7bcfe88ca1e",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch3",
+      "run_id": "aeabd5101818",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108/runs/A1-seed2/wandb/offline-run-20261111_032031-aeabd5101818",
+      "file_sha256": "5c150e160bcfdf327d0445d835e0d828eec30ba3464ee90a216d65745d64be85",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:13:54.342751+00:00",
+      "status": "verified",
+      "matched_history_rows": 1037,
+      "matched_scalar_values": 17822,
+      "cloud_history_rows": 1037,
+      "namespace_rows": {
+        "train": 1000,
+        "validation": 17,
+        "curve": 17,
+        "final": 3
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch3/runs/aeabd5101818",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch3",
+      "run_id": "65c71748afe4",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108/runs/B1-seed1/wandb/offline-run-20261110_011937-65c71748afe4",
+      "file_sha256": "2ded4280835bc71f08770a0138e5f40a1f78b204d559980a045398cb8150fc80",
+      "has_exit": false,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:14:06.240642+00:00",
+      "status": "verified",
+      "matched_history_rows": 2554,
+      "matched_scalar_values": 48611,
+      "cloud_history_rows": 2554,
+      "namespace_rows": {
+        "train": 1682,
+        "validation": 15,
+        "curve": 15,
+        "final": 0
+      },
+      "last_training_epoch": 841,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch3/runs/65c71748afe4",
+      "state": "failed",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch3",
+      "run_id": "1b15e4cb19f2",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108/runs/B1-seed1/wandb/offline-run-20261112_111840-1b15e4cb19f2",
+      "file_sha256": "c2b08796082cb544256a1d9bb7990037299f5d5802e94ccb9ddb1755aa142717",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:14:06.220280+00:00",
+      "status": "verified",
+      "matched_history_rows": 532,
+      "matched_scalar_values": 10179,
+      "cloud_history_rows": 532,
+      "namespace_rows": {
+        "train": 350,
+        "validation": 2,
+        "curve": 2,
+        "final": 3
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch3/runs/1b15e4cb19f2",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch3",
+      "run_id": "26c17849d8e2",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108/runs/M1-seed1/wandb/offline-run-20261111_032032-26c17849d8e2",
+      "file_sha256": "e7a834a3f433cda62c1aef7834cc0c9d459ab9bb3c7c7dde7d4941cf4d2dc228",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:15:19.148711+00:00",
+      "status": "verified",
+      "matched_history_rows": 3037,
+      "matched_scalar_values": 57873,
+      "cloud_history_rows": 3037,
+      "namespace_rows": {
+        "train": 2000,
+        "validation": 17,
+        "curve": 17,
+        "final": 3
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch3/runs/26c17849d8e2",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch3",
+      "run_id": "ac90573978e6",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108/runs/M0-seed2/wandb/offline-run-20261111_032032-ac90573978e6",
+      "file_sha256": "6ee12277efc4c258362a1c4123930ca2b2c25ecaf1f7d7251d49f7b83e338d22",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:15:19.018773+00:00",
+      "status": "verified",
+      "matched_history_rows": 3037,
+      "matched_scalar_values": 57873,
+      "cloud_history_rows": 3037,
+      "namespace_rows": {
+        "train": 2000,
+        "validation": 17,
+        "curve": 17,
+        "final": 3
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch3/runs/ac90573978e6",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch3",
+      "run_id": "c5e9165c34c9",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108/runs/B1-seed2/wandb/offline-run-20261110_082156-c5e9165c34c9",
+      "file_sha256": "b4be1f74c5f7013b30b0dec6a31f9ace27f9d46d513cd470ed336162b5f29186",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:15:04.353159+00:00",
+      "status": "verified",
+      "matched_history_rows": 3037,
+      "matched_scalar_values": 57873,
+      "cloud_history_rows": 3037,
+      "namespace_rows": {
+        "train": 2000,
+        "validation": 17,
+        "curve": 17,
+        "final": 3
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch3/runs/c5e9165c34c9",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    },
+    {
+      "entity": "maxlyu254-university-of-illinois-urbana-champaign",
+      "project": "defog-qm9-batch3",
+      "run_id": "250bb7530268",
+      "session": "/scratch/xinyan14/motiflow-experiments/qm9-batch3/batch3-matrix-20261108/runs/M1-seed2/wandb/offline-run-20261111_032229-250bb7530268",
+      "file_sha256": "42ece47b93c72ef6846f52dd6617f8f0568258f15846086ca465189fd926017b",
+      "has_exit": true,
+      "truncated_last_block": false,
+      "sdk_version": "0.31.2",
+      "verified_utc": "2026-11-21T19:15:54.896301+00:00",
+      "status": "verified",
+      "matched_history_rows": 3037,
+      "matched_scalar_values": 57873,
+      "cloud_history_rows": 3037,
+      "namespace_rows": {
+        "train": 2000,
+        "validation": 17,
+        "curve": 17,
+        "final": 3
+      },
+      "last_training_epoch": 1000,
+      "url": "https://forge.coreweave.com/wandb/maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-batch3/runs/250bb7530268",
+      "state": "finished",
+      "project_access": "PRIVATE"
+    }
+  ]
+}

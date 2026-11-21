@@ -63,5 +63,32 @@ interrupted updates, and final success/failure counts. Python compilation and
 shell syntax checks pass. End-to-end email delivery and live dependency changes
 have not been exercised with a submitted job.
 
+## Verified W&B synchronization (2026-11-21)
+
+The original W&B0.20.1 CLI could print `done` and mark files synced after a
+server-schema failure, so its exit status was insufficient. All current batch
+managers and the B1 continuation now call `scripts/wandb_sync.py`.
+Uploads/API reads use a separate pinned W&B0.31.2 environment at
+`/scratch/xinyan14/motiflow-tools/wandb-sync/0.31.2`; run
+`bash scripts/setup_wandb_sync.sh` once to provision it. The training environment
+remains unchanged and only decodes local offline records for verification.
+
+The helper compares every saved scalar history value at its original step
+with the unsampled cloud history, checks exact row counts, and writes
+`<offline-session>/verified-sync.json` only after success. It allows bounded
+cloud-ingestion delay, ignores legacy `.synced` markers, and checks existing
+cloud runs before uploading so repeated calls do not append duplicate history.
+An existing but mismatched cloud run fails verification rather than receiving
+a blind replay. New recovery projects are explicitly PRIVATE. A CLI zero exit
+with missing history fails the controller and therefore yields INCOMPLETE mail.
+No checkpoints or raw graph pools are registered as W&B artifacts.
+
+For the already-queued explicit-H profile12622943, CPU sync12622945 and final
+notifier12622951 were temporarily held, then released after the runtime
+`BATCH1_MANAGER` was redirected to immutable operations source `ed094dc` and the
+sidecar interpreter configured. The original model source5bea299, GPU job,
+and notification dependency chain were preserved. Previous runtime settings
+are backed up beside that operations archive; changes are recorded in launch.json.
+
 Official references: [Slurm sbatch mail/dependency options](https://slurm.schedmd.com/sbatch.html)
 and [scontrol hold, update and release](https://slurm.schedmd.com/scontrol.html).

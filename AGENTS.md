@@ -1,5 +1,27 @@
 # Project context for future sessions
 
+2026-11-21 W&B repair: old0.20.1 CLI falsely reported success after a null
+ServerSettings introspection crash. API key is present and authenticates as
+maxlyu254; no replacement needed. Diagnosis:
+`docs/results/wandb-sync-diagnosis-20261121.json`. Current batch managers use
+`scripts/wandb_sync.py` and a separate pinned0.31.2 sync environment, provisioned
+by `scripts/setup_wandb_sync.sh`; training dependencies remain unchanged.
+Cloud success requires exact unsampled scalar history verification, recorded in
+each offline session's `verified-sync.json`. Legacy .synced markers are not proof.
+Existing cloud runs are verified before replay to avoid appended duplicate rows.
+New projects are PRIVATE. Recovery report on CC:
+`/scratch/xinyan14/motiflow-experiments/wandb-recovery/20261121/verified-report.json`.
+Profile12622943's pending CPU sync12622945 now uses immutable operations ed094dc
+via runtime BATCH1_MANAGER; original model5bea299 preserved. Sync and final mail
+12622951 were released after the update; no GPU jobs added or restarted.
+See `docs/batch-email-notifications.md` for the verified-sync behavior.
+Recovery completed: all19 offline sessions across18 logical model/seed cells
+API-verified (42,733 history rows;802,313 scalar values). Separate audit matched
+all18,000 active train-epoch records,306 curve/validation records each, and72 final
+records to cloud. See `docs/results/wandb-sync-recovery-20261121.json` for canonical
+workspace URLs (Forge), receipts and the B1 interrupted-attempt caveat. All three
+projects PRIVATE; use the existing account. No retraining or new GPU jobs.
+
 2026-11-21: user authorized B0/M1 explicit-H QM9 profiling and submission only;
 full H training remains unapproved. See the new H section in
 `docs/degree-aware-vun-plan.md`, `scripts/h_profile_cluster.py` and

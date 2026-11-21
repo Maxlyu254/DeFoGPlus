@@ -2,6 +2,17 @@
   "submitted_utc_date": "2026-11-21",
   "purpose": "User-authorized B0 and M1 explicit-hydrogen QM9 profiling only",
   "source_commit": "5bea29934d6c18aa11bcb350869e98cee2ccac4b",
+  "sync_repair_operations": {
+    "date": "2026-11-21",
+    "source_commit": "ed094dc7314479f04b36d44fd1aaf6fc0adf3edb",
+    "manager": "/scratch/xinyan14/motiflow-experiments/qm9-h-profiling/profile-20261121/operations/wandb-sync-ed094dc/scripts/h_profile_cluster.py",
+    "sync_python": "/scratch/xinyan14/motiflow-tools/wandb-sync/0.31.2/bin/python",
+    "runtime_change": "BATCH1_MANAGER and BATCH1_SYNC_PYTHON updated; previous environment.sh and launch.json backed up beside operations source",
+    "original_model_source_preserved": true,
+    "job_ids_and_dependencies_preserved": true,
+    "held_then_released": ["12622945", "12622951"],
+    "verification": "Exact remote scalar history checks required before sync/controller success"
+  },
   "branch": "experiments/qm9-structural-priors-batch1",
   "batch_root": "/scratch/xinyan14/motiflow-experiments/qm9-h-profiling/profile-20261121",
   "archive_root": "/u/xinyan14/motiflow-artifacts/qm9-h-profiling/profile-20261121",

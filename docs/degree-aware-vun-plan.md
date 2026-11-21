@@ -4,6 +4,20 @@ Recorded: 2026-10-25. Source: the user's discussion and requested evaluation pla
 
 ## Objective and current status
 
+W&B correction2026-11-21: historical CLI `done` output did not establish cloud
+upload. W&B0.20.1 failed a server-schema probe and hid the error. Repair uses
+separate SDK0.31.2 with exact cloud scalar-history checks and original run IDs;
+training environment/model source unchanged. See
+`docs/results/wandb-sync-diagnosis-20261121.json` and the verified-sync section of
+`docs/batch-email-notifications.md`. Current profile sync12622945 now delegates
+to repaired operations ed094dc; notifier12622951 still follows it. Historical
+offline records have been recovered:19 sessions for18 logical model/seed cells,
+42,733 history rows and802,313 scalar values verified. A separate canonical-log
+audit matched all18,000 active training epochs,306 curve points and72 final
+records, including B1's825+175 resume sequence. See
+`docs/results/wandb-sync-recovery-20261121.json` for current workspace URLs and
+the interrupted B1 attempt. Use this API evidence rather than former CLI messages.
+
 User direction (2026-11-21): defer novelty-mechanism analysis and plan the next
 experiment batch on QM9 with explicit hydrogen. Subsequently authorized B0/M1
 profiling implementation and submission only. Full H training remains a proposal.
