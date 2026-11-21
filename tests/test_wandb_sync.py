@@ -3,10 +3,11 @@ import json
 from pathlib import Path
 import sys
 import tempfile
+import types
 import unittest
 from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from wandb_sync import compare_history, sync_session, ensure_project
+from wandb_sync import compare_history, sync_session, ensure_project, worker
 
 
 class VerifiedSyncTest(unittest.TestCase):
@@ -66,6 +67,41 @@ class VerifiedSyncTest(unittest.TestCase):
         self.assertIn('/wandb-sync/0.31.2/bin/python',args[0])
         self.assertEqual(args[-2:],['--reader-python','/training/python'])
         self.assertTrue(run.call_args[1]['check'])
+
+    def worker_case(self, existing, verification):
+        temp=tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        session=Path(temp.name)
+        spec=dict(entity='e',project='p',run_id='r',file_sha256='hash',history=self.expected)
+        api=types.SimpleNamespace(runs=lambda *a,**k:iter([object()] if existing else []))
+        fake=types.SimpleNamespace(__version__='0.31.2',Api=lambda **k:api)
+        patches=[patch.dict(sys.modules,wandb=fake),
+                 patch.dict('os.environ',WANDB_API_KEY='test-only'),
+                 patch('wandb_sync.subprocess.check_output',return_value=json.dumps(spec)),
+                 patch('wandb_sync.ensure_project'),
+                 patch('wandb_sync.verify_cloud',side_effect=verification),
+                 patch('wandb_sync.subprocess.run')]
+        import contextlib
+        with contextlib.ExitStack() as stack:
+            for p in patches: stack.enter_context(p)
+            run=patches[-1].target.run
+            if isinstance(verification,Exception):
+                with self.assertRaises(RuntimeError): worker(session,'/reader')
+                self.assertFalse((session/'verified-sync.json').exists())
+                self.assertTrue((session/'verified-sync-failure.json').exists())
+            else:
+                worker(session,'/reader')
+                self.assertEqual(json.loads((session/'verified-sync.json').read_text())['status'],'verified')
+            return run.call_count
+
+    def test_existing_cloud_data_not_replayed_without_receipt(self):
+        self.assertEqual(self.worker_case(True,lambda spec:dict(matched_history_rows=2)),0)
+
+    def test_zero_cli_exit_with_missing_cloud_data_is_failure(self):
+        self.assertEqual(self.worker_case(False,RuntimeError('missing remote history')),1)
+
+    def test_partial_existing_cloud_run_is_not_blindly_appended(self):
+        self.assertEqual(self.worker_case(True,RuntimeError('incomplete remote history')),0)
 
 
 if __name__=='__main__': unittest.main()

@@ -5,6 +5,7 @@ The training interpreter only decodes the old offline format. Uploads and cloud
 reads use the pinned sidecar SDK; a CLI success or .synced marker is insufficient.
 """
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import datetime
 import fcntl
 import hashlib
@@ -94,7 +95,8 @@ def same_scalar(expected, actual):
 def compare_history(expected, actual):
     cloud = {int(row['_step']): row for row in actual}
     if len(cloud) != len(actual) or len(actual) != len(expected):
-        raise ValueError('Cloud history row count differs from the offline history')
+        raise ValueError('Cloud history row count differs: expected '+str(len(expected))+
+                         ', got '+str(len(actual))+' ('+str(len(cloud))+' unique steps)')
     matched = values = 0
     for row in expected:
         step = int(row['_step'])
@@ -137,7 +139,7 @@ def verify_cloud(spec):
     import wandb
     last_error = None
     path = '/'.join(spec[k] for k in ['entity','project','run_id'])
-    for attempt in range(7):
+    for attempt in range(37):
         try:
             # Refresh run metadata and bypass stale history caches during ingestion.
             api = wandb.Api(timeout=30)
@@ -148,7 +150,7 @@ def verify_cloud(spec):
                         project_access=project_info(api, spec)['access'])
         except (ValueError, RuntimeError) as error:
             last_error = error
-            if attempt < 6:
+            if attempt < 36:
                 time.sleep(5)
     raise RuntimeError('Cloud verification failed for '+path+': '+str(last_error))
 
@@ -210,6 +212,7 @@ if __name__ == '__main__':
     parser.add_argument('paths', nargs='+', type=Path)
     parser.add_argument('--reader-python', default=READER_PYTHON)
     parser.add_argument('--report', type=Path)
+    parser.add_argument('--workers', type=int, choices=range(1,5), default=3)
     args = parser.parse_args()
     if args.mode == 'inspect':
         if len(args.paths) != 1:
@@ -227,13 +230,16 @@ if __name__ == '__main__':
             raise RuntimeError('No offline sessions found; refusing an empty success')
         report = dict(status='running', sdk_version=SYNC_VERSION, sessions=[], failures=[])
         atomic_json(args.report, report)
-        for session in sessions:
-            try:
-                sync_session(session, args.reader_python)
-                report['sessions'].append(json.loads((session/'verified-sync.json').read_text()))
-            except Exception as error:
-                report['failures'].append(dict(session=str(session), error=str(error)))
-            atomic_json(args.report, report)
+        with ThreadPoolExecutor(max_workers=args.workers) as pool:
+            pending={pool.submit(sync_session, session, args.reader_python):session for session in sessions}
+            for future in as_completed(pending):
+                session=pending[future]
+                try:
+                    future.result()
+                    report['sessions'].append(json.loads((session/'verified-sync.json').read_text()))
+                except Exception as error:
+                    report['failures'].append(dict(session=str(session), error=str(error)))
+                atomic_json(args.report, report)
         report['status'] = 'verified' if not report['failures'] else 'incomplete'
         atomic_json(args.report, report)
         if report['failures']:
