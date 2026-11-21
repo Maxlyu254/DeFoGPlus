@@ -4,6 +4,81 @@ Recorded: 2026-10-25. Source: the user's discussion and requested evaluation pla
 
 ## Objective and current status
 
+User direction (2026-11-21): defer novelty-mechanism analysis and plan the next
+experiment batch on QM9 with explicit hydrogen. Subsequently authorized B0/M1
+profiling implementation and submission only. Full H training remains a proposal.
+Default batch budget remains50 A100-hours.
+
+Proposed first H batch: B0/M0/M1, one common training seed, fixed200 epochs,
+after a profiling gate. Keep the current9-layer backbone, widths, optimizer,
+500-step sampler and eta=omega=0. The repository's qm9_with_h preset also
+changes depth to7, horizon to2000 and omega to0.05, so do not import it wholesale
+as a representation-only ablation. A0/A1 form a subsequent matched H pair.
+
+Implementation inspection: no-H versus H node limits9 versus29; hardcoded
+dataset size distributions imply mean node counts8.7955 versus18.0325.
+Dense node-pair arrays pad to each batch maximum. Expected padded N^2 under
+those preset distributions is about8.1–9.3 times no-H for physical batches
+128–1024; worst-case N^2 ratio10.38. RRWP also contains dense matrix products.
+These are shape/cost estimates from source, not measured H timings. A provisional
+whole-job multiplier4–10 relative to the measured6.1–6.6 hours/no-H1000-epoch
+job implies roughly25–65 hours per H1000-epoch run under the current evaluation
+protocol. Memory and throughput must be profiled on the target A100 first.
+
+Reserve4 GPU-hours as the profiling wall safeguard (revised from the initial3)
+for B0/M1 profiling (batch-size/memory checks,
+warm-up and5–10 timed full-data epochs, representative2k/10k500-step sampling,
+evaluation and checkpoint I/O). Then up to15 hours each for three200-epoch runs:
+49 hours reserved including profiling, within50. These limits are conditional on
+profiling; reduce the common horizon or number of runs if the measured costs
+do not fit. No convergence-driven extensions or drift logic. Queue all three
+authorized full runs together once profiling establishes resource settings.
+Three1000-epoch H runs would likely need approximately75–195 GPU-hours rather
+than one50-hour batch. Revisit that estimate after profiling.
+
+Start batch-size profiling conservatively at128/256; test larger batches if
+memory allows. Preserve effective batch1024 through accumulation8/4 if needed,
+using the same effective batch and schedule for all H variants. The current
+runner needs accumulation support if physical batch is reduced; changing it
+without accumulation changes optimizer-step counts per epoch. Profile generation
+batch limits separately. Do not multiply the graph-size penalty by the increase
+in number of microbatches again when estimating per-epoch cost.
+
+CPU preparation must preserve underlying molecule/split IDs, build H-specific
+processed data and training-only reference/degree/composition caches, and
+validate the5-type decoder [H,C,N,O,F]. Audit fully explicit-H completeness
+(sanitization alone may allow implicit-H completion or radicals) and consistent
+molecule canonicalization for U/N, normalizing explicit/implicit representation
+only after validity is assessed. Record H attachment/degree failures, atom-type
+degree and bond-order diagnostics; degree remains distinct from valence for
+multiple bonds. Refitting mu includes H's approximatelyone-neighbor behavior;
+the independent-edge prior does not enforce exact H degree or valence.
+
+For the proposed200-epoch screen, sample2k at epochs0,1,5,10,20,25,50,100,200
+and three separate10k pools at final200; save scheduled plus rolling recovery
+checkpoints. Assess final validity and its curve first, then U/N/VUN. Compare
+against saved no-H200-epoch checkpoints when examining representation transfer;
+do not present a H200/no-H1000 difference as a matched training-horizon result.
+Use a dedicated H W&B project and runtime root, existing reset checks/exclusions
+and final batch email policy. No D0/D1/A2 or novelty-control variants included.
+
+Profiling implementation: `scripts/qm9_h_profile.py`, `scripts/h_profile_cluster.py`,
+`configs/h_profile.yaml`, `scripts/slurm/qm9-h-{prepare,profile}.sbatch` and isolated
+`src/experiments/batch1/h_metrics.py`. CPU preparation preserves all three splits,
+audits original H training targets (no filtering), and tests B0/M1 train/sample/
+resume. One A100 task profiles B0 then M1: worst-case29-node training batches
+128/256/512/1024, sampling256/512/1024/2048; largest common training batch below
+80% memory with accumulation to1024. Seven full epochs (two warmup, five timed),
+one resumed epoch, 500-step2k and10k sampling per model, strict and legacy
+evaluation, checkpoint size/I/O and200/1000-epoch runtime projections.
+Separate-process probes recover from CUDA OOM without hiding other errors.
+Reports: `<root>/profiles/{B0,M1}/{summary.json,metrics/train.jsonl,metrics/train.csv}`;
+raw graphs remain on scratch, selected metrics/checkpoints backed up under home.
+Offline scalar logs sync to `defog-qm9-h-profiling` after all retry waves; one final
+email to xinyan14@illinois.edu. Automatic retries apply only to reset failures
+before profiling starts, never to partially executed profiles. See launch record
+in `docs/submissions/` for actual IDs once submitted.
+
 Standing budget instruction (2026-11-08): assume 50 A100 GPU-hours for each new
 experiment batch unless the user explicitly changes it. Historical charges
 remain recorded. The proposed full QM9 matrix completion and deferred studies

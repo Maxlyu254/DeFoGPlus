@@ -1,0 +1,12 @@
+defaults:
+  - batch3
+  - _self_
+
+general:
+  name: qm9-h-profile
+dataset:
+  remove_h: false
+train:
+  batch_size: 128
+batch1:
+  wandb_project: defog-qm9-h-profiling

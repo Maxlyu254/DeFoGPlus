@@ -124,7 +124,7 @@ def reconcile(root, plan, runner=command):
     seconds = int(plan['gpu_task_hours']*3600)
     array = runner(common+['--job-name=defog-gpu-retry', '--time='+str(seconds//60),
                    '--array='+','.join(map(str,retry)), '--exclude='+plan['excluded_nodes'],
-                   str(scripts/'batch1-a100.sbatch')]).split(';')[0]
+                   str(scripts/plan.get('gpu_script','batch1-a100.sbatch'))]).split(';')[0]
     if not array.isdigit():
         raise RuntimeError('Unrecognized sbatch response; reconcile retry_intent')
     wave = dict(array=array, tasks=retry, sync=None)

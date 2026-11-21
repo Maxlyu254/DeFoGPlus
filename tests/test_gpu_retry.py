@@ -69,6 +69,12 @@ class RetryTest(unittest.TestCase):
         self.assertTrue(self.reconcile())
         self.assertFalse(any(a[0]=='sbatch' for a in self.calls))
 
+    def test_profile_replacement_uses_profile_script(self):
+        self.plan['gpu_script']='qm9-h-profile.sbatch'
+        self.assertTrue(self.reconcile())
+        gpu=[a for a in self.calls if a[0]=='sbatch'][0]
+        self.assertTrue(gpu[-1].endswith('/qm9-h-profile.sbatch'))
+
     def test_completed_replacement_never_restarted(self):
         self.reconcile()
         self.calls=[]
@@ -175,6 +181,21 @@ class RetryTest(unittest.TestCase):
         self.assertIn('--mail-type=END,FAIL',jobs[3])
         self.assertNotIn('--mail-type=END,FAIL',jobs[0])
         self.assertEqual(calls[-2:],[['scontrol','release','403'],['scontrol','release','404']])
+
+    def test_initial_profile_script_selection(self):
+        root=self.root/'profile';root.mkdir()
+        plan=dict(self.plan,jobs={},prepare_script='qm9-h-prepare.sbatch',
+                  gpu_script='qm9-h-profile.sbatch')
+        calls=[]
+        def scheduler(args):
+            calls.append(args)
+            return str(600+len(calls))
+        with patch.object(batch2_cluster,'command',scheduler), \
+                patch.object(batch2_cluster,'accounting',return_value={}), \
+                patch.object(Path,'is_file',return_value=True),contextlib.redirect_stdout(io.StringIO()):
+            batch2_cluster.submit(types.SimpleNamespace(submit=True),root,plan)
+        self.assertTrue(calls[0][-1].endswith('/qm9-h-prepare.sbatch'))
+        self.assertTrue(calls[1][-1].endswith('/qm9-h-profile.sbatch'))
 
     def test_final_summary_separates_run_success_and_controller_failure(self):
         self.plan.update(target_epochs=1000,git_commit='test')

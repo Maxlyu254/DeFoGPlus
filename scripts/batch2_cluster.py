@@ -118,13 +118,13 @@ def submit(args, root, plan):
         print(key+": "+jobid, flush=True)
         return jobid
     label = 'defog-'+plan.get('protocol','batch2')
-    cpu = job("prepare", ["--job-name="+label+"-prepare"], "batch1-prepare.sbatch")
+    cpu = job("prepare", ["--job-name="+label+"-prepare"], plan.get('prepare_script','batch1-prepare.sbatch'))
     gpu_options = ["--job-name="+label, "--time="+str(int(plan['gpu_task_hours']*60)),
                    "--array="+plan.get('array_expression',f"0-{len(plan['tasks'])-1}"),
                    "--dependency=afterok:"+cpu, "--kill-on-invalid-dep=yes"]
     if plan.get("excluded_nodes"):
         gpu_options.append("--exclude="+plan["excluded_nodes"])
-    gpu = job("array", gpu_options, "batch1-a100.sbatch")
+    gpu = job("array", gpu_options, plan.get('gpu_script','batch1-a100.sbatch'))
     sync_options = ["--job-name="+label+"-sync", "--dependency=afterany:"+gpu,
                     "--kill-on-invalid-dep=yes"]
     if plan.get('mail_user'):

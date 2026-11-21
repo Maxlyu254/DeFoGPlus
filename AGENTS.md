@@ -1,5 +1,15 @@
 # Project context for future sessions
 
+2026-11-21: user authorized B0/M1 explicit-H QM9 profiling and submission only;
+full H training remains unapproved. See the new H section in
+`docs/degree-aware-vun-plan.md`, `scripts/h_profile_cluster.py` and
+`scripts/qm9_h_profile.py`. One A100 task sequentially profiles B0/M1, four-hour
+safeguard charged against the next50-hour batch; CPU preparation gates GPU work.
+Preserve9-layer backbone, effective batch1024, 500-step eta=omega=0 sampler.
+H-specific strict validity rejects implicit-H completion/radicals; normalize
+canonical molecule identity after checking explicit H. No-H metrics unchanged.
+Check `docs/submissions/qm9-h-profile-*.json` before retrying; never duplicate.
+
 Standing user budget instruction (2026-11-08): assume 50 A100 GPU-hours per new
 experiment batch unless explicitly changed. See `docs/qm9-matrix-completion-plan.md`
 for proposed full QM9 matrix completion (17 missing runs), failed-run recovery,
