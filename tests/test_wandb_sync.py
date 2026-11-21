@@ -21,8 +21,13 @@ class VerifiedSyncTest(unittest.TestCase):
         self.assertEqual(result['last_training_epoch'],1)
 
     def test_missing_cloud_run_history_fails(self):
-        with self.assertRaisesRegex(ValueError,'missing step'):
+        with self.assertRaisesRegex(ValueError,'row count'):
             compare_history(self.expected,[])
+
+    def test_duplicate_replay_rows_rejected(self):
+        duplicate=[dict(row,_step=row['_step']+2) for row in self.expected]
+        with self.assertRaisesRegex(ValueError,'row count'):
+            compare_history(self.expected,self.expected+duplicate)
 
     def test_missing_metric_and_wrong_value_fail(self):
         for rows in [[self.expected[0],{'_step':1}],

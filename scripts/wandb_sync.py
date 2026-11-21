@@ -93,6 +93,8 @@ def same_scalar(expected, actual):
 
 def compare_history(expected, actual):
     cloud = {int(row['_step']): row for row in actual}
+    if len(cloud) != len(actual) or len(actual) != len(expected):
+        raise ValueError('Cloud history row count differs from the offline history')
     matched = values = 0
     for row in expected:
         step = int(row['_step'])
@@ -168,18 +170,18 @@ def worker(session, reader_python):
         metadata.update(sdk_version=wandb.__version__,
                         verified_utc=datetime.datetime.now(datetime.timezone.utc).isoformat())
         try:
-            # Never trust a marker from the legacy CLI. A prior receipt is also
-            # rechecked remotely, so deleted/missing cloud data triggers recovery.
-            if evidence.exists() and json.loads(evidence.read_text()).get('file_sha256') == spec['file_sha256']:
-                try:
-                    verified = verify_cloud(spec)
-                    result = dict(metadata, status='verified', **verified)
-                    atomic_json(evidence, result)
-                    print(json.dumps(result), flush=True)
-                    return
-                except RuntimeError:
-                    pass
-            ensure_project(wandb.Api(timeout=30), spec)
+            # New SDK sync appends to an existing run. Check remote existence
+            # independently of local receipts/markers to prevent duplicate rows.
+            api = wandb.Api(timeout=30)
+            ensure_project(api, spec)
+            existing = next(iter(api.runs(spec['entity']+'/'+spec['project'],
+                                         filters={'name':spec['run_id']}, per_page=1)), None)
+            if existing is not None:
+                verified = verify_cloud(spec)
+                result = dict(metadata, status='verified', **verified)
+                atomic_json(evidence, result)
+                print(json.dumps(result), flush=True)
+                return
             env = dict(os.environ, WANDB_MODE='online')
             subprocess.run([sys.executable, '-m', 'wandb', 'sync', '--yes', '--include-synced',
                             '--entity', spec['entity'], '--project', spec['project'],
