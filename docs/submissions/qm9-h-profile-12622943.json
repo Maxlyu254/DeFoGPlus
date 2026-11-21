@@ -1,0 +1,59 @@
+{
+  "submitted_utc_date": "2026-11-21",
+  "purpose": "User-authorized B0 and M1 explicit-hydrogen QM9 profiling only",
+  "source_commit": "5bea29934d6c18aa11bcb350869e98cee2ccac4b",
+  "branch": "experiments/qm9-structural-priors-batch1",
+  "batch_root": "/scratch/xinyan14/motiflow-experiments/qm9-h-profiling/profile-20261121",
+  "archive_root": "/u/xinyan14/motiflow-artifacts/qm9-h-profiling/profile-20261121",
+  "jobs": {
+    "prepare": "12622942",
+    "array": "12622943",
+    "sync": "12622945",
+    "notify": "12622951"
+  },
+  "dependencies": {
+    "12622943": "afterok:12622942",
+    "12622945": "afterany:12622943",
+    "12622951": "afterany:12622945 (extended by retry controller if needed)"
+  },
+  "profiling_variants": ["B0", "M1"],
+  "gpu_array": "0 (one A100 task, both variants sequentially)",
+  "gpu_wall_safeguard_hours": 4,
+  "batch_budget_gpu_hours": 50,
+  "excluded_nodes": ["ccc0388", "ccc0390"],
+  "max_startup_reset_retries": 2,
+  "mail_user": "xinyan14@illinois.edu",
+  "wandb_project": "maxlyu254-university-of-illinois-urbana-champaign/defog-qm9-h-profiling",
+  "profile": {
+    "model_layers": 9,
+    "training_batch_candidates": [128, 256, 512, 1024],
+    "inference_batch_candidates": [256, 512, 1024, 2048],
+    "probe_max_nodes": 29,
+    "memory_ceiling_fraction": 0.8,
+    "effective_training_batch": 1024,
+    "epochs_per_variant": 8,
+    "warmup_epochs": 2,
+    "timed_epochs": 5,
+    "checkpoint_resume_epochs": 1,
+    "sample_counts_per_variant": [2000, 10000],
+    "sampling_steps": 500,
+    "eta": 0,
+    "omega": 0
+  },
+  "validation": {
+    "retry_controller_tests_passed": 18,
+    "hydrogen_metric_and_config_tests_passed": 5,
+    "existing_batch1_tests_passed_on_recheck": 12,
+    "existing_batch1_initial_test_caveat": "Offline W&B file size was temporarily zero on first invocation; unchanged suite passed on repeat.",
+    "shell_syntax_check": "passed",
+    "full_model_cpu_callback_train_sample_resume": "B0 and M1 passed on already-processed no-H data; H-specific full-model smoke gates the A100 task in preparation job",
+    "cpu_smoke_root": "/scratch/xinyan14/motiflow-experiments/qm9-h-profiling/development-checks/resume-5bea299"
+  },
+  "notes": [
+    "No full 200-epoch or 1000-epoch H experiment submitted.",
+    "Check launch.json, squeue and sacct before retrying; never duplicate.",
+    "CPU preparation audits molecule split IDs and H training targets without filtering.",
+    "GPU timing/quality after eight epochs is diagnostic, not mature-model evidence.",
+    "Offline scalar sessions sync after all retry waves; raw graphs and model binaries are not uploaded to W&B."
+  ]
+}

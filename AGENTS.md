@@ -9,6 +9,10 @@ Preserve9-layer backbone, effective batch1024, 500-step eta=omega=0 sampler.
 H-specific strict validity rejects implicit-H completion/radicals; normalize
 canonical molecule identity after checking explicit H. No-H metrics unchanged.
 Check `docs/submissions/qm9-h-profile-*.json` before retrying; never duplicate.
+Submitted H profiling: CPU12622942, single-task A100 array12622943, CPU sync/
+retry12622945, final email12622951. Source5bea299; root
+`/scratch/xinyan14/motiflow-experiments/qm9-h-profiling/profile-20261121`.
+Read `docs/submissions/qm9-h-profile-12622943.json` before checking/retrying.
 
 Standing user budget instruction (2026-11-08): assume 50 A100 GPU-hours per new
 experiment batch unless explicitly changed. See `docs/qm9-matrix-completion-plan.md`

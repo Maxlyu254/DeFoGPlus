@@ -78,6 +78,10 @@ Offline scalar logs sync to `defog-qm9-h-profiling` after all retry waves; one f
 email to xinyan14@illinois.edu. Automatic retries apply only to reset failures
 before profiling starts, never to partially executed profiles. See launch record
 in `docs/submissions/` for actual IDs once submitted.
+Submitted2026-11-21: preparation12622942, A100 profile12622943 (task0 includes
+B0/M1 sequentially), sync/retry12622945, final email12622951. Executed source
+5bea299; root `/scratch/xinyan14/motiflow-experiments/qm9-h-profiling/profile-20261121`.
+See `docs/submissions/qm9-h-profile-12622943.json`; check state before any retry.
 
 Standing budget instruction (2026-11-08): assume 50 A100 GPU-hours for each new
 experiment batch unless the user explicitly changes it. Historical charges
