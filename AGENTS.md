@@ -7,6 +7,13 @@ pretraining-profile retry staging carries previous GPU charges and preserves
 the failed allocation. Same H representation; quality/reference findings still
 require review before full training. Check the latest H retry submission record
 and live scheduler before submitting anything; do not duplicate.
+Retry submitted: preparation12654102, A10012654110_0 (B0 then M1), sync12654112,
+final email12654114. Source65149e3; root
+`/scratch/xinyan14/motiflow-experiments/qm9-h-profiling/profile-retry-20261122`.
+Read `docs/submissions/qm9-h-profile-retry-12654110.json` before checking/retrying.
+26 tests and four actual B0/M1 CPU train/sample probes passed before submission.
+Same50-hour ledger includes prior53s; four-hour safeguard and reset retries,
+verified W&B sync and email xinyan14@illinois.edu remain enabled.
 
 Verified2026-11-22: H profiling batch finished INCOMPLETE. CPU12622942 completed
 (379s), GPU12622943_0 FAILED1:0 after53s on healthy ccc0389, sync12622945 failed

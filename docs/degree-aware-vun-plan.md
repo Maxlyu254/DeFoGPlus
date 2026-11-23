@@ -14,6 +14,11 @@ uses the verified sidecar W&B sync. Replacement is permitted only after the
 previous profile fully failed and before any model-training artifacts exist.
 The H data-quality/reference findings remain diagnostic; full H training is
 still unapproved. See the new submission record once jobs are queued.
+Submitted retry: CPU12654102, A10012654110_0, sync12654112, final email12654114.
+Immutable source65149e3; root
+`/scratch/xinyan14/motiflow-experiments/qm9-h-profiling/profile-retry-20261122`.
+26 unit/controller tests and actual B0/M1 29-node CPU train/sample probes passed.
+See `docs/submissions/qm9-h-profile-retry-12654110.json`; no duplicate submissions.
 
 H profile status2026-11-22: batch12622943 failed at the first manual memory probe
 because it applied clip_grad_norm_ with the baseline's disabled clipping (None).

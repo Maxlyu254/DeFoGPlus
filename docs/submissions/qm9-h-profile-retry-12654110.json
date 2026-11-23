@@ -1,0 +1,62 @@
+{
+  "submitted_local_date": "2026-11-22",
+  "staged_utc": "2026-11-23T00:30:41.997784+00:00",
+  "purpose": "User-authorized repaired B0/M1 explicit-H resource profiling retry",
+  "source_commit": "65149e37f99f2b79a251d5eb295cf98b0392495f",
+  "branch": "experiments/qm9-structural-priors-batch1",
+  "batch_root": "/scratch/xinyan14/motiflow-experiments/qm9-h-profiling/profile-retry-20261122",
+  "archive_root": "/u/xinyan14/motiflow-artifacts/qm9-h-profiling/profile-retry-20261122",
+  "retry_of": "/scratch/xinyan14/motiflow-experiments/qm9-h-profiling/profile-20261121",
+  "jobs": {
+    "prepare": "12654102",
+    "array": "12654110",
+    "sync": "12654112",
+    "notify": "12654114"
+  },
+  "dependencies": {
+    "12654110": "afterok:12654102",
+    "12654112": "afterany:12654110",
+    "12654114": "afterany:12654112; follows reset-retry controllers if needed"
+  },
+  "gpu_task": "12654110_0: B0 then M1 sequentially, one A100",
+  "gpu_wall_safeguard_hours": 4,
+  "batch_limit_gpu_hours": 50,
+  "previous_attempt_charge_gpu_hours": 0.014722222222222222,
+  "reservation_including_previous_charge_gpu_hours": 4.014722222222222,
+  "excluded_nodes": [
+    "ccc0388",
+    "ccc0390"
+  ],
+  "max_startup_reset_retries": 2,
+  "email": "xinyan14@illinois.edu",
+  "sync_sdk": "Isolated W&B0.31.2, exact cloud scalar-history verification",
+  "repair": [
+    "Manual training probe honors disabled clipping (None/zero).",
+    "CPU preparation exercises manual train/sample probes for both full models, plus checkpoint-resume.",
+    "Explicit pretraining retry guard requires old GPU tasks FAILED and no model-training artifacts."
+  ],
+  "validation_before_submission": {
+    "h_metrics_config_manual_optimizer_tests": 7,
+    "retry_controller_tests": 19,
+    "full_model_cpu_manual_probes": "B0/M1 train/sample passed, batch2, worst-case29 nodes, two optimizer steps with clip_grad=None",
+    "artifacts": "/scratch/xinyan14/motiflow-experiments/qm9-h-profiling/development-checks/retry-65149e3/cpu-probe-preflight",
+    "python_compilation": "passed",
+    "shell_syntax": "passed",
+    "previous_state": "Prior jobs terminal; queue empty before submission"
+  },
+  "scope": {
+    "representation": "Same prepared H graphs and prior cache as original attempt",
+    "epochs_per_variant": 8,
+    "sample_counts": [
+      2000,
+      10000
+    ],
+    "sampling_steps": 500,
+    "eta": 0,
+    "omega": 0,
+    "effective_training_batch": 1024,
+    "model_layers": 9,
+    "quality_caveat": "Target/reference self-check findings unresolved; quality scores diagnostic. Full H training remains unapproved."
+  },
+  "duplicate_prevention": "Inspect launch.json, squeue and sacct before any further retry."
+}
