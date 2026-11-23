@@ -92,6 +92,21 @@ def initialize(cfg, data, infos, smiles, stats, metadata):
     return model
 
 
+def training_probe_steps(model, batch, clip_grad, steps=2):
+    """Exercise backward and initialized AMSGrad state using training semantics."""
+    optimizer = model.configure_optimizers()
+    for _ in range(steps):
+        optimizer.zero_grad(set_to_none=True)
+        loss = model.training_step(batch, 1)['loss']
+        loss.backward()
+        # Lightning treats None/zero as disabled clipping. Keep the manual
+        # memory probe consistent with that configuration instead of casting None.
+        if clip_grad is not None and clip_grad > 0:
+            torch.nn.utils.clip_grad_norm_(model.parameters(), clip_grad)
+        optimizer.step()
+    return optimizer
+
+
 def fit_resume(cfg, data, infos, smiles, stats, metadata, directory, smoke=False, accumulation=1):
     directory.mkdir(parents=True, exist_ok=True)
     model = initialize(cfg, data, infos, smiles, stats, metadata)
@@ -166,47 +181,46 @@ def prepare(root):
     del audit_samples, data, infos, smiles, stats
     gc.collect()
     for variant in ['B0','M1']:
+        # Exercise the manual probe branches too: Lightning smoke training
+        # alone cannot catch errors in their separate optimizer/clipping path.
+        probe(root, variant, 'train', 2, device='cpu')
+        probe(root, variant, 'sample', 2, device='cpu')
         cfg, data, infos, smiles, stats, metadata = load(variant, smoke=True)
         fit_resume(cfg,data,infos,smiles,stats,metadata,root/'cpu-preflight'/variant,smoke=True)
         del data, infos, smiles, stats
         gc.collect()
-    atomic_json(root/'cpu-preflight/READY.json',dict(status='passed',variants=['B0','M1']))
+    atomic_json(root/'cpu-preflight/READY.json',dict(status='passed',variants=['B0','M1'],
+        manual_train_sample_probes='passed', train_sample_resume='passed'))
     (root/'READY').write_text('explicit-H splits/audit and B0/M1 train/sample/resume passed\n')
 
 
-def probe(root, variant, kind, size):
-    directory=root/'profiles'/variant
+def probe(root, variant, kind, size, device='cuda'):
+    directory=root/('profiles' if device=='cuda' else 'cpu-probe-preflight')/variant
     directory.mkdir(parents=True,exist_ok=True)
     output=directory/f'probe-{kind}-{size}.json'
     cfg,data,infos,smiles,stats,metadata=load(variant)
-    model=initialize(cfg,data,infos,smiles,stats,metadata).cuda()
-    row=dict(kind=kind,batch_size=size,status='ok',max_nodes=29)
+    model=initialize(cfg,data,infos,smiles,stats,metadata).to(device)
+    row=dict(kind=kind,batch_size=size,status='ok',max_nodes=29,device=device)
     try:
-        torch.cuda.reset_peak_memory_stats()
+        if device=='cuda': torch.cuda.reset_peak_memory_stats()
         started=time.perf_counter()
         if kind=='train':
             sizes=data.train_dataset.slices['x'][1:]-data.train_dataset.slices['x'][:-1]
             index=int(torch.argmax(sizes))
             assert int(sizes[index])==29
-            batch=Batch.from_data_list([data.train_dataset[index]]*size).cuda()
-            optimizer=model.configure_optimizers()
+            batch=Batch.from_data_list([data.train_dataset[index]]*size).to(device)
             # Include initialized AMSGrad optimizer state and second-step activations.
-            for _ in range(2):
-                optimizer.zero_grad(set_to_none=True)
-                loss=model.training_step(batch,1)['loss']
-                loss.backward()
-                torch.nn.utils.clip_grad_norm_(model.parameters(),cfg.train.clip_grad)
-                optimizer.step()
+            training_probe_steps(model, batch, cfg.train.clip_grad)
         else:
             model.eval()
             model.cfg.sample.sample_steps=2
             with torch.no_grad():
-                model.sample_conditioned(torch.full((size,),29,device='cuda',dtype=torch.long))
-        torch.cuda.synchronize()
+                model.sample_conditioned(torch.full((size,),29,device=device,dtype=torch.long))
+        synchronize(model)
         row.update(seconds=time.perf_counter()-started,
-            peak_gpu_allocated_bytes=torch.cuda.max_memory_allocated(),
-            peak_gpu_reserved_bytes=torch.cuda.max_memory_reserved(),
-            total_gpu_bytes=torch.cuda.get_device_properties(0).total_memory)
+            peak_gpu_allocated_bytes=torch.cuda.max_memory_allocated() if device=='cuda' else 0,
+            peak_gpu_reserved_bytes=torch.cuda.max_memory_reserved() if device=='cuda' else 0,
+            total_gpu_bytes=torch.cuda.get_device_properties(0).total_memory if device=='cuda' else 0)
     except torch.cuda.OutOfMemoryError:
         row['status']='oom'
     atomic_json(output,row)
@@ -293,6 +307,8 @@ if __name__=='__main__':
     parser.add_argument('--variant',choices=['B0','M1'])
     parser.add_argument('--kind',choices=['train','sample'])
     parser.add_argument('--batch-size',type=int)
+    parser.add_argument('--device',choices=['cpu','cuda'],default='cuda',
+                        help='CPU probes are tiny preflight checks, never GPU measurements')
     args=parser.parse_args()
     root=Path(os.environ['BATCH1_ROOT']).resolve()
     os.chdir(root)
@@ -301,5 +317,5 @@ if __name__=='__main__':
     pl.seed_everything(0,workers=True)
     if args.mode=='prepare': prepare(root)
     elif args.mode=='select': select(root)
-    elif args.mode=='probe': probe(root,args.variant,args.kind,args.batch_size)
+    elif args.mode=='probe': probe(root,args.variant,args.kind,args.batch_size,args.device)
     else: profile(root,args.variant)

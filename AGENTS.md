@@ -1,5 +1,13 @@
 # Project context for future sessions
 
+2026-11-22: user authorized fixing and resubmitting the failed H profile.
+Fixed manual-probe disabled clipping (None/zero); CPU preparation now runs the
+actual manual full-model train/sample probes as well as smoke/resume. Explicit
+pretraining-profile retry staging carries previous GPU charges and preserves
+the failed allocation. Same H representation; quality/reference findings still
+require review before full training. Check the latest H retry submission record
+and live scheduler before submitting anything; do not duplicate.
+
 Verified2026-11-22: H profiling batch finished INCOMPLETE. CPU12622942 completed
 (379s), GPU12622943_0 FAILED1:0 after53s on healthy ccc0389, sync12622945 failed
 because profiles incomplete, notifier12622951 completed with INCOMPLETE0/1.

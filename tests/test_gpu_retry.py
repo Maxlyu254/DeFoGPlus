@@ -197,6 +197,28 @@ class RetryTest(unittest.TestCase):
         self.assertTrue(calls[0][-1].endswith('/qm9-h-prepare.sbatch'))
         self.assertTrue(calls[1][-1].endswith('/qm9-h-profile.sbatch'))
 
+    def test_pretraining_profile_retry_accepts_only_failed_untrained_profile(self):
+        previous=self.root/'previous';previous.mkdir()
+        summary=previous/'runs/Hprofile-seed0/metrics/summary.json'
+        summary.parent.mkdir(parents=True)
+        summary.write_text(json.dumps(dict(status='incomplete')))
+        prior=dict(self.plan,protocol='h_profile')
+        (previous/'launch.json').write_text(json.dumps(prior))
+        root=self.root/'replacement';root.mkdir()
+        ledger=dict(jobs=[dict(state='FAILED') for _ in prior['tasks']])
+        plan=dict(self.plan,jobs={},protocol='h_profile',pretraining_profile_retry=True,
+                  retry_of=str(previous.resolve()))
+        with patch.object(batch2_cluster,'accounting',return_value=ledger),contextlib.redirect_stdout(io.StringIO()):
+            batch2_cluster.submit(types.SimpleNamespace(submit=False),root,plan)
+        ledger['jobs'][0]['state']='RUNNING'
+        with patch.object(batch2_cluster,'accounting',return_value=ledger),self.assertRaises(RuntimeError):
+            batch2_cluster.submit(types.SimpleNamespace(submit=False),root,plan)
+        ledger['jobs'][0]['state']='FAILED'
+        manifest=previous/'profiles/B0/manifest.json'
+        manifest.parent.mkdir(parents=True);manifest.write_text('{}')
+        with patch.object(batch2_cluster,'accounting',return_value=ledger),self.assertRaises(RuntimeError):
+            batch2_cluster.submit(types.SimpleNamespace(submit=False),root,plan)
+
     def test_final_summary_separates_run_success_and_controller_failure(self):
         self.plan.update(target_epochs=1000,git_commit='test')
         for task in self.plan['tasks']:

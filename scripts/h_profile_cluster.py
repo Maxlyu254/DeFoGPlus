@@ -11,16 +11,29 @@ import subprocess
 import tarfile
 
 from batch1_cluster import command,write_json,PYTHON,DATA
-from batch2_cluster import submit,accounting
+from batch2_cluster import submit,accounting,profile_training_started
 from gpu_retry import reconcile
 from wandb_sync import sync_session
 
 ROOT=Path(__file__).resolve().parents[1]
 
 
-def stage(root):
+def stage(root, retry_of=None):
     if command(['git','-C',str(ROOT),'status','--porcelain']):
         raise RuntimeError('Commit before staging')
+    previous_charge=0
+    if retry_of is not None:
+        retry_of=retry_of.resolve()
+        if retry_of.parent != root.parent or retry_of == root:
+            raise ValueError('Profile retry must use a new sibling root')
+        previous=json.loads((retry_of/'launch.json').read_text())
+        ledger=accounting(retry_of,previous)
+        if (previous.get('protocol')!='h_profile' or
+                len(ledger['jobs'])!=len(previous['tasks']) or
+                not all(r['state']=='FAILED' for r in ledger['jobs']) or
+                profile_training_started(retry_of)):
+            raise RuntimeError('Retry requires a fully failed profile with no model training artifacts')
+        previous_charge=ledger['consumed_gpu_hours']
     root.mkdir(parents=True,exist_ok=False)
     source=root/'source';source.mkdir()
     commit=command(['git','-C',str(ROOT),'rev-parse','HEAD'])
@@ -41,7 +54,8 @@ def stage(root):
         tasks=[dict(array_task=0,configuration='Hprofile',seed=0)],array_expression='0',
         profiling_variants=['B0','M1'],target_epochs=8,concurrency_cap=None,
         gpu_task_hours=4,reservation_gpu_hours=4,budget_gpu_hours=50,
-        previous_attempt_charge_gpu_hours=0,previous_batch_charge_gpu_hours=0,
+        previous_attempt_charge_gpu_hours=previous_charge,previous_batch_charge_gpu_hours=0,
+        retry_of=str(retry_of) if retry_of else None,pretraining_profile_retry=retry_of is not None,
         excluded_nodes='ccc0388,ccc0390',max_gpu_retries=2,mail_user='xinyan14@illinois.edu',
         prepare_script='qm9-h-prepare.sbatch',gpu_script='qm9-h-profile.sbatch',jobs={})
     write_json(root/'launch.json',plan)
@@ -90,9 +104,10 @@ if __name__=='__main__':
     p.add_argument('mode',choices=['stage','submit','sync','status'])
     p.add_argument('--batch-root',required=True,type=Path)
     p.add_argument('--submit',action='store_true')
+    p.add_argument('--retry-of',type=Path,help='Explicit replacement for a failed pretraining profile')
     args=p.parse_args();root=args.batch_root.resolve()
     if args.mode=='stage':
-        stage(root)
+        stage(root,args.retry_of)
     elif args.mode=='sync':
         sync(root)
     else:

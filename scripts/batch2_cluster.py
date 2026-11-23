@@ -103,6 +103,13 @@ def submit(args, root, plan):
                         r["state"] == "FAILED" for r in previous_ledger["jobs"]):
                     if not list((other.parent/"runs").glob("*/metrics/summary.json")):
                         continue
+                    # A failed resource profile may have only an INCOMPLETE
+                    # controller summary. An explicitly staged pretraining
+                    # profile retry can replace it without bypassing training guards.
+                    if (plan.get('pretraining_profile_retry') and
+                            plan.get('protocol') == previous_plan.get('protocol') == 'h_profile' and
+                            not profile_training_started(other.parent)):
+                        continue
             raise RuntimeError("Another submission exists in this batch family; reconcile before submitting")
     assert plan["reservation_gpu_hours"] + plan.get("previous_attempt_charge_gpu_hours", 0) <= plan["budget_gpu_hours"]
     if not args.submit:
@@ -138,6 +145,13 @@ def submit(args, root, plan):
         command(['scontrol','release',sync])
         command(['scontrol','release',notify])
     accounting(root, plan)
+
+
+def profile_training_started(root):
+    profiles = root/'profiles'
+    return any(
+        next(profiles.glob(pattern), None) is not None for pattern in
+        ['*/manifest.json','*/summary.json','*/metrics/train.jsonl','*/*.ckpt','*/wandb/offline-run-*'])
 
 
 def main(tasks=TASKS, batch_name='batch2', budget_hours=50):

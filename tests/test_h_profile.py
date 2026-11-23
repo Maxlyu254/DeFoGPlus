@@ -2,12 +2,15 @@
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
 sys.path[:0]=[str(Path(__file__).resolve().parents[1]),str(Path(__file__).resolve().parents[1]/'src')]
 import torch
 from rdkit import Chem, RDLogger
 from hydra import compose, initialize_config_dir
 from experiments.batch1.h_metrics import evaluate_h
 from experiments.batch1.metrics import canonical_reference
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
+from qm9_h_profile import training_probe_steps
 
 DECODER=['H','C','N','O','F']
 
@@ -62,6 +65,36 @@ class HydrogenMetricsTest(unittest.TestCase):
         self.assertEqual(cfg.sample.sample_steps,500)
         self.assertEqual((cfg.sample.eta,cfg.sample.omega),(0,0))
         self.assertEqual(cfg.augmentation.id,'M1')
+
+
+class ManualProbeTest(unittest.TestCase):
+    class TinyModel(torch.nn.Linear):
+        def __init__(self): super().__init__(2,1,bias=False)
+        def configure_optimizers(self):
+            return torch.optim.AdamW(self.parameters(),lr=.01,amsgrad=True)
+        def training_step(self,batch,index):
+            return {'loss':((self(batch)-3)**2).mean()}
+
+    def test_disabled_clipping_still_initializes_two_optimizer_steps(self):
+        for value in [None,0]:
+            with self.subTest(clip_grad=value):
+                model=self.TinyModel()
+                before=model.weight.detach().clone()
+                with patch('torch.nn.utils.clip_grad_norm_') as clip:
+                    optimizer=training_probe_steps(model,torch.ones(2,2),value)
+                clip.assert_not_called()
+                self.assertFalse(torch.equal(before,model.weight))
+                state=optimizer.state[model.weight]
+                self.assertEqual(int(state['step']),2)
+                self.assertIn('max_exp_avg_sq',state)
+
+    def test_enabled_clipping_is_applied_to_both_steps(self):
+        model=self.TinyModel()
+        original=torch.nn.utils.clip_grad_norm_
+        with patch('torch.nn.utils.clip_grad_norm_',wraps=original) as clip:
+            training_probe_steps(model,torch.ones(2,2),.1)
+        self.assertEqual(clip.call_count,2)
+        self.assertLessEqual(float(model.weight.grad.norm()),.100001)
 
 
 if __name__=='__main__': unittest.main()

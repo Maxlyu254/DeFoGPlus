@@ -4,6 +4,17 @@ Recorded: 2026-10-25. Source: the user's discussion and requested evaluation pla
 
 ## Objective and current status
 
+2026-11-22 user authorizes fixing and resubmitting B0/M1 profiling. Repair skips
+gradient clipping when None/zero and exercises the exact manual train/sample
+probe branches on CPU for both full models before GPU work. The retry uses a
+new sibling runtime root, immutable fixed source, and the same processed data/
+statistics. It carries the original0.0147222-hour charge into the same50-hour
+ledger, keeps the four-hour safeguard/reset retries and single final email, and
+uses the verified sidecar W&B sync. Replacement is permitted only after the
+previous profile fully failed and before any model-training artifacts exist.
+The H data-quality/reference findings remain diagnostic; full H training is
+still unapproved. See the new submission record once jobs are queued.
+
 H profile status2026-11-22: batch12622943 failed at the first manual memory probe
 because it applied clip_grad_norm_ with the baseline's disabled clipping (None).
 CUDA health passed; this is a profiler code bug and reset-only retries did not
