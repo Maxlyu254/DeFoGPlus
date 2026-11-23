@@ -4,6 +4,16 @@ Recorded: 2026-10-25. Source: the user's discussion and requested evaluation pla
 
 ## Objective and current status
 
+H profile status2026-11-22: batch12622943 failed at the first manual memory probe
+because it applied clip_grad_norm_ with the baseline's disabled clipping (None).
+CUDA health passed; this is a profiler code bug and reset-only retries did not
+trigger. CPU preparation passed; no usable epoch/sampling timing or GPU model
+metrics were produced. Charge0.0147222 A100-hours. The strict target audit accepts
+87.14% of training graphs and reports24 self-novel identities: investigate H
+expansion, formal-charge representation, raw SDF sanitization and reference
+canonicalization before full H training. See
+`docs/results/qm9-h-profile-12622943.json`. No fix or new job submitted by this check.
+
 W&B correction2026-11-21: historical CLI `done` output did not establish cloud
 upload. W&B0.20.1 failed a server-schema probe and hid the error. Repair uses
 separate SDK0.31.2 with exact cloud scalar-history checks and original run IDs;

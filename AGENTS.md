@@ -1,5 +1,19 @@
 # Project context for future sessions
 
+Verified2026-11-22: H profiling batch finished INCOMPLETE. CPU12622942 completed
+(379s), GPU12622943_0 FAILED1:0 after53s on healthy ccc0389, sync12622945 failed
+because profiles incomplete, notifier12622951 completed with INCOMPLETE0/1.
+Read `docs/results/qm9-h-profile-12622943.json` before fixing/retrying. Probe
+unconditionally calls clip_grad_norm_ with cfg.train.clip_grad=None at
+scripts/qm9_h_profile.py:198; honor disabled clipping and test manual probe path.
+No valid timing/memory/profile model metrics; GPU charge0.0147222h against50h.
+CPU H smoke/split checks passed. Dataset audit accepts85,162/97,734 targets
+(87.14%);10,463 need implicit-H completion and2,109 fail sanitization.24 target
+identities appear novel against cached reference. Resolve representation/
+reference policy before full H training: raw SDF spot checks include implicit H,
+formal charges omitted from neutral graph encoding, and a sanitization failure.
+No fix or retry submitted during this status check; queue was empty.
+
 2026-11-21 W&B repair: old0.20.1 CLI falsely reported success after a null
 ServerSettings introspection crash. API key is present and authenticates as
 maxlyu254; no replacement needed. Diagnosis:

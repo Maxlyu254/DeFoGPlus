@@ -1,0 +1,71 @@
+{
+  "checked_date": "2026-11-22",
+  "status": "incomplete",
+  "scope": "B0/M1 explicit-H QM9 resource profiling only",
+  "batch_root": "/scratch/xinyan14/motiflow-experiments/qm9-h-profiling/profile-20261121",
+  "source_commit": "5bea29934d6c18aa11bcb350869e98cee2ccac4b",
+  "sync_operations_commit": "ed094dc7314479f04b36d44fd1aaf6fc0adf3edb",
+  "jobs": {
+    "prepare": {"id": "12622942", "state": "COMPLETED", "exit_code": "0:0", "seconds": 379, "node": "ccc0290"},
+    "profile": {"id": "12622943_0", "state": "FAILED", "exit_code": "1:0", "seconds": 53, "node": "ccc0389"},
+    "sync": {"id": "12622945", "state": "FAILED", "exit_code": "1:0", "seconds": 13, "node": "ccc0356"},
+    "notify": {"id": "12622951", "state": "COMPLETED", "exit_code": "0:0", "seconds": 14, "node": "ccc0292"}
+  },
+  "failure": {
+    "phase": "First B0 training-memory probe, batch128, after backward and before optimizer.step",
+    "location": "scripts/qm9_h_profile.py:198",
+    "configured_gradient_clip": null,
+    "call": "torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.train.clip_grad)",
+    "error": "TypeError: float() argument must be a string or a real number, not 'NoneType'",
+    "cause": "The manual profiling probe fails to honor clip_grad:null, which disables clipping in the baseline configuration. CPU smoke/resume exercised Lightning training but not this manual probe branch.",
+    "cuda_check": "Passed on NVIDIA A100-SXM4-80GB",
+    "reset_retry": "Not eligible; retry_stopped.0=not_a_reset_startup_failure",
+    "sync_failure": "Controller correctly reports Profiling incomplete; no B0/M1 summaries or profile W&B sessions exist.",
+    "required_probe_fix": "Skip clip_grad_norm_ when cfg.train.clip_grad is None and exercise the manual probe path before a retry."
+  },
+  "available_results": {
+    "cpu_train_sample_resume": {"status": "passed", "variants": ["B0", "M1"]},
+    "split_ids_preserved": true,
+    "training_graphs": 97734,
+    "validation_graphs": 20042,
+    "test_graphs": 13055,
+    "atom_decoder": ["H", "C", "N", "O", "F"],
+    "max_nodes": 29,
+    "strict_training_target_audit": {
+      "attempts": 97734,
+      "valid_count": 85162,
+      "validity": 0.8713651339349663,
+      "invalid_count": 2109,
+      "implicit_h_completion_count": 10463,
+      "radical_count": 0,
+      "disconnected_count": 0,
+      "unique_count": 85089,
+      "novel_count_against_cached_training_reference": 24,
+      "interpretation": "Dataset/evaluator self-check only. The representation and reference policies require review; these are not generated model scores."
+    },
+    "read_only_source_spot_checks": {
+      "molecule_id_23": {
+        "processed_graph_atoms": 5,
+        "processed_hydrogen_vertices": 1,
+        "neutral_graph_implicit_H_atoms": [{"symbol": "C", "implicit_H": 2}, {"symbol": "N", "implicit_H": 2}],
+        "raw_SDF_atoms": 5,
+        "raw_SDF_hydrogen_vertices": 1,
+        "raw_SDF_formal_charges": [{"atom_index": 4, "charge": 1}],
+        "sanitized_raw_SDF_SMILES": "[H][C]C#C[NH3+]",
+        "raw_SDF_atoms_after_AddHs": 8,
+        "interpretation": "Source includes implicit H and a formal charge; current categorical graph encoding reconstructs neutral atoms and does not expand all implicit H."
+      },
+      "molecule_id_105": {
+        "atoms": 11,
+        "hydrogen_vertices": 6,
+        "processed_graph_error": "Explicit valence for atom # 1 C, 5, is greater than permitted",
+        "raw_SDF_sanitized_supplier_result": null,
+        "interpretation": "The original SDF also fails RDKit sanitization for this example."
+      }
+    }
+  },
+  "unavailable_results": ["Completed batch-size/memory probes", "Epoch timing", "Checkpoint I/O profile", "500-step sampling timing", "Generated V/U/N/VUN", "Measured H/no-H runtime scaling"],
+  "gpu_budget": {"consumed_hours": 0.014722222222222222, "batch_limit_hours": 50, "remaining_hours": 49.985277777777775},
+  "notification": {"recipient": "xinyan14@illinois.edu", "reported_status": "INCOMPLETE", "completed_logical_tasks": 0, "total_logical_tasks": 1, "delivery_independently_verified": false},
+  "actions_this_check": "Read-only cluster inspection and local/Git assessment record. No code fix, retry, new Slurm submission or dataset alteration."
+}
